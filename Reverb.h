@@ -31,6 +31,7 @@ using namespace daisysp;
  * LED 4 -
  **********************************************/
 
+//#define DSY_REVERBSC_MAX_SIZE 791488
 static ReverbSc DSY_SDRAM_BSS verb;
 
 class Reverb : public IEffect
@@ -48,13 +49,13 @@ public:
 private:
     const char *knobNames[MAX_KNOBS] = {(char *)"MIX", (char *)"DECAY", (char *)"TONE", (char *)""};
 
-    const float feedbackMin = 0.4f;
-    const float feedbackMax = 1.0f;
-    const float lpfreqMin = 0.0f;
+    const float decayMin = 0.4f;
+    const float decayMax = 0.99f;
+    const float toneMin = 0.0f;
 
     float sample_rate;
-    float feedback = 1.0f;
-    float lpfreq = 0.0f;
+    float decay = 1.0f;
+    float tone = 0.0f;
     float mixLevel = 0.0f;
 
     Knob decayKnob;

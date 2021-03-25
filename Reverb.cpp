@@ -10,11 +10,19 @@ void Reverb::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, unsig
 
     // Initialize the knobs
     mixKnob.Init(hw, KNOB_1_CHN, mixLevel);
-    decayKnob.Init(hw, KNOB_2_CHN, feedback, feedbackMin, feedbackMax);
-    toneKnob.Init(hw, KNOB_3_CHN, lpfreq, lpfreqMin, sample_rate / 2.0f);
+    decayKnob.Init(hw, KNOB_2_CHN, decay, decayMin, decayMax);
+    toneKnob.Init(hw, KNOB_3_CHN, tone, toneMin, sample_rate / 2.0f);
 
-    // Initialize the compressor
-    int ret = verb.Init(sample_rate);
+    // Initialize the reverb (check sample rate)
+    int ret = -1;
+    if (sample_rate > 48000.f)
+    {
+        ret = verb.Init(sample_rate / 2);
+    }
+    else
+    {
+        ret = verb.Init(sample_rate);
+    }
     debugPrintlnF(hw, "Verb setup %d", ret);
 }
 
@@ -43,25 +51,25 @@ void Reverb::Loop(bool allowEffectControl)
         }
 
         // Knob 1 controls the ratio
-        if (decayKnob.SetNewValue(feedback))
+        if (decayKnob.SetNewValue(decay))
         {
-            verb.SetFeedback(feedback);
-            debugPrintlnF(hw, "Updated the decay to: %f", feedback);
-            updateEditModeKnobValue(display, 1, feedback);
+            verb.SetFeedback(decay);
+            debugPrintlnF(hw, "Updated the decay to: %f", decay);
+            updateEditModeKnobValue(display, 1, decay);
 
             // Update the effect settings
-            effectSettings.knobSettings[0] = feedback;
+            effectSettings.knobSettings[0] = decay;
         }
 
         // Knob 2 controls the threshold
-        if (toneKnob.SetNewValue(lpfreq))
+        if (toneKnob.SetNewValue(tone))
         {
-            verb.SetLpFreq(lpfreq);
-            debugPrintlnF(hw, "Updated the tone to: %f", lpfreq);
-            updateEditModeKnobValue(display, 2, lpfreq);
+            verb.SetLpFreq(tone);
+            debugPrintlnF(hw, "Updated the tone to: %f", tone);
+            updateEditModeKnobValue(display, 2, tone);
 
             // Update the effect settings
-            effectSettings.knobSettings[1] = lpfreq;
+            effectSettings.knobSettings[1] = tone;
         }
     }
 }
@@ -79,8 +87,8 @@ char **Reverb::GetKnobNames()
 EffectSettings Reverb::GetEffectSettings()
 {
     // Update the effect settings
-    effectSettings.knobSettings[0] = feedback;
-    effectSettings.knobSettings[1] = lpfreq;
+    effectSettings.knobSettings[0] = decay;
+    effectSettings.knobSettings[1] = tone;
     effectSettings.knobSettings[2] = mixLevel;
 
     // Return the settings
@@ -90,10 +98,10 @@ EffectSettings Reverb::GetEffectSettings()
 void Reverb::SetEffectSettings(EffectSettings effectSettings)
 {
     // Update boost level from the effect settings
-    feedback = effectSettings.knobSettings[0];
-    lpfreq = effectSettings.knobSettings[1];
+    decay = effectSettings.knobSettings[0];
+    tone = effectSettings.knobSettings[1];
     mixLevel = effectSettings.knobSettings[2];
 
-    verb.SetFeedback(feedback);
-    verb.SetLpFreq(lpfreq);
+    verb.SetFeedback(decay);
+    verb.SetLpFreq(tone);
 }
