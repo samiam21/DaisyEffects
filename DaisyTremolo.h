@@ -3,7 +3,7 @@
 
 #include "daisy_seed.h"
 #include "daisysp.h"
-#include "../../../include/IEffect.h"
+#include "IEffect.h"
 #include "../../../include/PedalConfig.h"
 #include "../Inputs/Knob.h"
 #include "../Inputs/NFNToggle.h"

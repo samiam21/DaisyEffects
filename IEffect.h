@@ -2,9 +2,9 @@
 #define IEFFECT_H
 
 #include "daisy_seed.h"
-#include "PedalConfig.h"
-#include "Storage.h"
-#include "../src/DaisyDisplay.h"
+#include "../../include/PedalConfig.h"
+#include "../../include/Storage.h"
+#include "../../src/DaisyDisplay.h"
 
 class IEffect
 {

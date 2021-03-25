@@ -2,7 +2,7 @@
 #define CLEAN_BOOST_H
 
 #include "daisy_seed.h"
-#include "../../../include/IEffect.h"
+#include "IEffect.h"
 #include "../../../include/PedalConfig.h"
 #include "../Inputs/Knob.h"
 
