@@ -1,5 +1,5 @@
-#ifndef DRUM_MACHINE_H
-#define DRUM_MACHINE_H
+#ifndef METRONOME_H
+#define METRONOME_H
 
 #include "daisy_seed.h"
 #include "daisysp.h"
@@ -22,8 +22,8 @@ using namespace daisysp;
  * SPDT 2 - 
  * 
  * Knob 1 - Volume
- * Knob 2 - 
- * Knob 3 - 
+ * Knob 2 - Tempo
+ * Knob 3 - Time Signature
  * Knob 4 - 
  * 
  * LED 1 - 
@@ -32,7 +32,7 @@ using namespace daisysp;
  * LED 4 - 
  **********************************************/
 
-class DrumMachine : public IEffect
+class Metronome : public IEffect
 {
 public:
     void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, unsigned long *avgTempo);
@@ -45,35 +45,39 @@ public:
     void SetEffectSettings(EffectSettings effectSettings);
 
 private:
-    const char *knobNames[MAX_KNOBS] = {(char *)"VOLUME", (char *)"SPEED", (char *)"TM SIG", (char *)""};
+    const char *knobNames[MAX_KNOBS] = {(char *)"VOLUME", (char *)"TEMPO", (char *)"TM SIG", (char *)""};
 
-    // Drum parameters
-    const float kickAttackFmAmount = 0.1f;
-    const float kickFrequency = 1.0f;
-    const float kickAccent = 0.5f;
-    const float kickDecay = 0.75f;
-    const float kickBoost = 10.0f;
+    // Beat parameters
+    const float bFrequency = 550.0f;
+    const float dbFrequency = 1000.0f;
+    const float dbDirtiness = 0.0f;
+    const float dbFmEnvelopeAmount = 0.0f;
+    const float dbFmEnvelopeDecay = 0.0f;
+    const float dbDecay = 0.0f;
+    const float dbTone = 1.0f;
+    const float dbAccent = 0.0f;
 
     // Adjustable parameters
-    const float volumeLevelMin = 0.2f;
-    const float volumeLevelMax = 25.0f;  // DEBUG - lower this for release
-    const float speedMin = 0.0f;
-    const float speedMax = 1.0f;
+    const float volumeLevelMin = 0.0f;
+    const float volumeLevelMax = 2.0f;
+    const float tempoMin = 0.0f;
+    const float tempoMax = 1.0f;
     const float timeSigMin = 0.0f;
     const float timeSigMax = 1.0f;
 
     float volume = 1.0f;
-    float speed = 1.0f;
+    float tempo = 1.0f;
     float timeSig = 1.0f;
 
+    int count = 0;
+
     Knob volumeKnob;
-    Knob speedKnob;
+    Knob tempoKnob;
     Knob timeSigKnob;
 
     // Drum kit
     Metro tick;
-    AnalogBassDrum kick;
-    AnalogSnareDrum snare;
+    SyntheticBassDrum beat;
 };
 
 #endif
