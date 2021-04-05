@@ -5,23 +5,27 @@ void Metronome::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, un
     hw = hardware;
     display = daisyDisplay;
 
+    // Initialize the knobs
     volumeKnob.Init(hw, KNOB_1_CHN, volume, volumeLevelMin, volumeLevelMax);
     tempoKnob.Init(hw, KNOB_2_CHN, tempo, tempoMin, tempoMax);
-    timeSigKnob.Init(hw, KNOB_3_CHN, timeSig, timeSigMin, timeSigMax);
 
-    // Initialize drums
+    // Initialize the toggle
+    timeSigToggle.Init(hw->GetPin(effectSPDT1Pin1), hw->GetPin(effectSPDT1Pin2));
+    UpdateToggleDisplay();
+
+    // Initialize metronome and beat
     float sample_rate = hw->AudioSampleRate();
     tick.Init(1.f, sample_rate);
     beat.Init(sample_rate);
 
     // Setup beat
     beat.SetFreq(bFrequency);
-    beat.SetDirtiness(dbDirtiness);
-    beat.SetFmEnvelopeAmount(dbFmEnvelopeAmount);
-    beat.SetFmEnvelopeDecay(dbFmEnvelopeDecay);
-    beat.SetDecay(dbDecay);
-    beat.SetTone(dbTone);
-    beat.SetAccent(dbAccent);
+    beat.SetDirtiness(dirtiness);
+    beat.SetFmEnvelopeAmount(fmEnvelopeAmount);
+    beat.SetFmEnvelopeDecay(fmEnvelopeDecay);
+    beat.SetDecay(decay);
+    beat.SetTone(tone);
+    beat.SetAccent(accent);
 }
 
 float Metronome::Process(float in)
@@ -40,9 +44,9 @@ float Metronome::Process(float in)
             beat.SetFreq(bFrequency);
         }
 
-        // Increment the count
+        // Increment and loop the count
         count++;
-        if (count >= 4)
+        if (count >= (int)timeSignature)
         {
             count = 0;
         }
@@ -74,12 +78,53 @@ void Metronome::Loop(bool allowEffectControl)
             updateEditModeKnobValue(display, 1, tempo);
         }
 
-        // Knob 3 controls the time signature
-        if (timeSigKnob.SetNewValue(timeSig))
+        // Read the toggle to set the time signature
+        if (timeSigToggle.ReadToggle() == 0)
         {
-            debugPrintlnF(hw, "Updated the timeSig level to: %f", timeSig);
-            updateEditModeKnobValue(display, 2, timeSig);
+            if (timeSignature != TimeSignature::ThreeFour)
+            {
+                timeSignature = TimeSignature::ThreeFour;
+                count = 0;
+                debugPrintln(hw, "Setting time signature to 3/4");
+                UpdateToggleDisplay();
+            }
         }
+        else if (timeSigToggle.ReadToggle() == 1)
+        {
+            if (timeSignature != TimeSignature::FourFour)
+            {
+                timeSignature = TimeSignature::FourFour;
+                count = 0;
+                debugPrintln(hw, "Setting time signature to 4/4");
+                UpdateToggleDisplay();
+            }
+        }
+        else
+        {
+            if (timeSignature != TimeSignature::SixEight)
+            {
+                timeSignature = TimeSignature::SixEight;
+                count = 0;
+                debugPrintln(hw, "Setting time signature to 6/8");
+                UpdateToggleDisplay();
+            }
+        }
+    }
+}
+
+void Metronome::UpdateToggleDisplay()
+{
+    switch (timeSignature)
+    {
+    case TimeSignature::ThreeFour:
+        updateEditModeToggleValue(display, (char *)"3/4");
+        break;
+    case TimeSignature::FourFour:
+        updateEditModeToggleValue(display, (char *)"4/4");
+        break;
+    case TimeSignature::SixEight:
+        updateEditModeToggleValue(display, (char *)"6/8");
+        break;
     }
 }
 
@@ -95,8 +140,12 @@ char **Metronome::GetKnobNames()
 
 EffectSettings Metronome::GetEffectSettings()
 {
-    // Add boost level to the effect settings
+    // Add to the effect settings
     effectSettings.knobSettings[0] = volume;
+    effectSettings.knobSettings[1] = tempo;
+
+    // Add the time signature to the effect settings
+    effectSettings.togglePosition = timeSigToggle.ReadToggle();
 
     // Return the settings
     return effectSettings;
@@ -104,6 +153,21 @@ EffectSettings Metronome::GetEffectSettings()
 
 void Metronome::SetEffectSettings(EffectSettings effectSettings)
 {
-    // Update boost level from the effect settings
+    // Update the effect settings
     volume = effectSettings.knobSettings[0];
+    tempo = effectSettings.knobSettings[1];
+
+    // Read the toggle to set the time signature
+    if (effectSettings.togglePosition == 0)
+    {
+        timeSignature = TimeSignature::ThreeFour;
+    }
+    else if (effectSettings.togglePosition == 1)
+    {
+        timeSignature = TimeSignature::FourFour;
+    }
+    else
+    {
+        timeSignature = TimeSignature::SixEight;
+    }
 }

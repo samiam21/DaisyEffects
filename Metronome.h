@@ -6,6 +6,7 @@
 #include "IEffect.h"
 #include "../../../include/PedalConfig.h"
 #include "../Inputs/Knob.h"
+#include "../Inputs/NFNToggle.h"
 
 using namespace daisy;
 using namespace daisysp;
@@ -18,7 +19,7 @@ using namespace daisysp;
  * SPST 3 - 
  * SPST 4 - 
  * 
- * SPDT 1 - 
+ * SPDT 1 - Time Signature (3/4, 4/4, 6/8)
  * SPDT 2 - 
  * 
  * Knob 1 - Volume
@@ -32,6 +33,13 @@ using namespace daisysp;
  * LED 4 - 
  **********************************************/
 
+enum TimeSignature
+{
+    ThreeFour = 3,
+    FourFour = 4,
+    SixEight = 6
+};
+
 class Metronome : public IEffect
 {
 public:
@@ -43,39 +51,37 @@ public:
     char **GetKnobNames();
     EffectSettings GetEffectSettings();
     void SetEffectSettings(EffectSettings effectSettings);
+    void UpdateToggleDisplay();
 
 private:
-    const char *knobNames[MAX_KNOBS] = {(char *)"VOLUME", (char *)"TEMPO", (char *)"TM SIG", (char *)""};
+    const char *knobNames[MAX_KNOBS] = {(char *)"VOLUME", (char *)"TEMPO", (char *)"", (char *)""};
 
     // Beat parameters
     const float bFrequency = 550.0f;
     const float dbFrequency = 1000.0f;
-    const float dbDirtiness = 0.0f;
-    const float dbFmEnvelopeAmount = 0.0f;
-    const float dbFmEnvelopeDecay = 0.0f;
-    const float dbDecay = 0.0f;
-    const float dbTone = 1.0f;
-    const float dbAccent = 0.0f;
+    const float dirtiness = 0.0f;
+    const float fmEnvelopeAmount = 0.0f;
+    const float fmEnvelopeDecay = 0.0f;
+    const float decay = 0.0f;
+    const float tone = 1.0f;
+    const float accent = 0.0f;
 
     // Adjustable parameters
     const float volumeLevelMin = 0.0f;
     const float volumeLevelMax = 2.0f;
     const float tempoMin = 0.0f;
     const float tempoMax = 1.0f;
-    const float timeSigMin = 0.0f;
-    const float timeSigMax = 1.0f;
 
     float volume = 1.0f;
     float tempo = 1.0f;
-    float timeSig = 1.0f;
+    TimeSignature timeSignature = TimeSignature::FourFour;
 
     int count = 0;
 
     Knob volumeKnob;
     Knob tempoKnob;
-    Knob timeSigKnob;
+    NFNToggle timeSigToggle;
 
-    // Drum kit
     Metro tick;
     SyntheticBassDrum beat;
 };
