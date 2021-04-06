@@ -56,6 +56,8 @@ public:
 private:
     const char *knobNames[MAX_KNOBS] = {(char *)"VOLUME", (char *)"TEMPO", (char *)"", (char *)""};
 
+    float GetTempoFromBpm(int bpm);
+
     // Beat parameters
     const float bFrequency = 550.0f;
     const float dbFrequency = 1000.0f;
@@ -69,11 +71,11 @@ private:
     // Adjustable parameters
     const float volumeLevelMin = 0.0f;
     const float volumeLevelMax = 2.0f;
-    const float tempoMin = 0.0f;
-    const float tempoMax = 1.0f;
+    const float tempoMin = 30.0f;
+    const float tempoMax = 240.0f;
 
     float volume = 1.0f;
-    float tempo = 1.0f;
+    float tempo = 90.0f;
     TimeSignature timeSignature = TimeSignature::FourFour;
 
     int count = 0;

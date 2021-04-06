@@ -15,7 +15,7 @@ void Metronome::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, un
 
     // Initialize metronome and beat
     float sample_rate = hw->AudioSampleRate();
-    tick.Init(1.f, sample_rate);
+    tick.Init(GetTempoFromBpm((int)tempo), sample_rate);
     beat.Init(sample_rate);
 
     // Setup beat
@@ -71,11 +71,15 @@ void Metronome::Loop(bool allowEffectControl)
             updateEditModeKnobValue(display, 0, volume);
         }
 
-        // Knob 2 controls the speed
+        // Knob 2 controls the tempo
         if (tempoKnob.SetNewValue(tempo))
         {
-            debugPrintlnF(hw, "Updated the speed level to: %f", tempo);
-            updateEditModeKnobValue(display, 1, tempo);
+            // Convert tempo float to an int
+            int t = (int)tempo;
+            tick.SetFreq(GetTempoFromBpm(t));
+
+            debugPrintlnF(hw, "Updated the tempo to: %f", t);
+            updateEditModeKnobValue(display, 1, t);
         }
 
         // Read the toggle to set the time signature
@@ -110,6 +114,11 @@ void Metronome::Loop(bool allowEffectControl)
             }
         }
     }
+}
+
+float Metronome::GetTempoFromBpm(int bpm)
+{
+    return bpm / 60.0f;
 }
 
 void Metronome::UpdateToggleDisplay()
