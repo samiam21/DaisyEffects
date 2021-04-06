@@ -78,6 +78,11 @@ private:
     float tempo = 90.0f;
     TimeSignature timeSignature = TimeSignature::FourFour;
 
+    // Tap tempo mutables
+    unsigned long tapTempoTime = 0;
+    unsigned long currentTapTempoAvg = 0;
+    unsigned long *pedalTapTempoAvg;
+
     int count = 0;
 
     Knob volumeKnob;
