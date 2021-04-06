@@ -25,7 +25,7 @@ using namespace daisysp;
  * 
  * Knob 1 - Mix
  * Knob 2 - Decay
- * Knob 3 - Speed
+ * Knob 3 - Tempo
  * Knob 4 - 
  * 
  * LED 1 - 
@@ -58,10 +58,11 @@ public:
     void UpdateToggleDisplay();
 
 private:
-    const char *knobNames[MAX_KNOBS] = {(char *)"MIX", (char *)"DECAY", (char *)"SPEED", (char *)""};
+    const char *knobNames[MAX_KNOBS] = {(char *)"MIX", (char *)"DECAY", (char *)"TEMPO", (char *)""};
 
     void TapTempoInterruptHandler();
     void TypeSwitcherLoopControl();
+    size_t CalculateSampleFromBpm(int bpm);
 
     DaisySeed *hw;
 
@@ -69,11 +70,11 @@ private:
     NFNToggle typeSwitcher;
     Knob mixLevelKnob;
     Knob decayKnob;
-    Knob speedKnob;
-    //Button tapTempoButton;
+    Knob tempoKnob;
 
-    static const size_t delayMaxSize = 48000;
+    static const size_t delayMaxSize = 96000;
     static const size_t initialTempoBpm = 90;
+    static const size_t bpmMultiplier = 60;
 
     // Decay constants
     const float minDecayValue = 0.0f;
@@ -83,21 +84,20 @@ private:
     const float mixLevelMin = 0.0f;
     const float mixLevelMax = 1.0f;
 
-    // Volume boost constants
-    const float speedMin = 30.0f;
-    const float speedMax = 180.0f;
+    // Tempo constants
+    const float tempoMin = 30.0f;
+    const float tempoMax = 240.0f;
 
     // Mutable parameters
-    DelayLine<float, delayMaxSize> del_line;
+    DelayLine<size_t, delayMaxSize> del_line;
     float decayValue = 0.5f;
     float mixLevel = 0.5f;
-    float speed = 0.0f;
+    float tempo = 0.0f;
 
     // Tap tempo mutables
     size_t currentTempoSamples;
-    unsigned long tapTempoTime = 0;
-    unsigned long currentTapTempoAvg = 0;
-    unsigned long *pedalTapTempoAvg;
+    int currentTapTempoBpm = 0;
+    int *pedalTapTempoBpm;
 
     // Type switcher mutables
     DelayType currentDelayType = DT_UNSET;

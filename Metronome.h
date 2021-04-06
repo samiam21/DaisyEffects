@@ -79,7 +79,6 @@ private:
     TimeSignature timeSignature = TimeSignature::FourFour;
 
     // Tap tempo mutables
-    unsigned long tapTempoTime = 0;
     int currentTapTempoBpm = 0;
     int *pedalTapTempoBpm;
 
