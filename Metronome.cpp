@@ -1,6 +1,6 @@
 #include "Metronome.h"
 
-void Metronome::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, unsigned long *avgTempo)
+void Metronome::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *newBpm)
 {
     hw = hardware;
     display = daisyDisplay;
@@ -14,7 +14,7 @@ void Metronome::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, un
     UpdateToggleDisplay();
 
     // Initialize the tap tempo parameters
-    pedalTapTempoAvg = avgTempo;
+    pedalTapTempoBpm = newBpm;
 
     // Initialize metronome and beat
     float sample_rate = hw->AudioSampleRate();
@@ -119,15 +119,14 @@ void Metronome::Loop(bool allowEffectControl)
     }
 
     // Check for an updated tap tempo
-    if (currentTapTempoAvg != *pedalTapTempoAvg)
+    if (currentTapTempoBpm != *pedalTapTempoBpm)
     {
-        currentTapTempoAvg = *pedalTapTempoAvg;
+        currentTapTempoBpm = *pedalTapTempoBpm;
 
         // Update the tick frequency
-        int bpm = 60000 / currentTapTempoAvg;
-        tick.SetFreq(GetTempoFromBpm(bpm));
+        tick.SetFreq(GetTempoFromBpm(currentTapTempoBpm));
 
-        debugPrintlnF(hw, "New Tempo: %d bpm", bpm);
+        debugPrintlnF(hw, "New Tempo: %d bpm", currentTapTempoBpm);
     }
 }
 

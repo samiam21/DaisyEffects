@@ -43,7 +43,7 @@ enum TimeSignature
 class Metronome : public IEffect
 {
 public:
-    void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, unsigned long *avgTempo);
+    void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *newBpm);
     void Cleanup();
     float Process(float in);
     void Loop(bool allowEffectControl);
@@ -80,8 +80,8 @@ private:
 
     // Tap tempo mutables
     unsigned long tapTempoTime = 0;
-    unsigned long currentTapTempoAvg = 0;
-    unsigned long *pedalTapTempoAvg;
+    int currentTapTempoBpm = 0;
+    int *pedalTapTempoBpm;
 
     int count = 0;
 

@@ -37,7 +37,7 @@ using namespace daisysp;
 class Drive : public IEffect
 {
 public:
-    void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, unsigned long *avgTempo);
+    void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *newBpm);
     void Cleanup();
     float Process(float in);
     void Loop(bool allowEffectControl);

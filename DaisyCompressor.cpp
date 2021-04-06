@@ -1,6 +1,6 @@
 #include "DaisyCompressor.h"
 
-void DaisyCompressor::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, unsigned long *avgTempo)
+void DaisyCompressor::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *newBpm)
 {
     hw = hardware;
     display = daisyDisplay;

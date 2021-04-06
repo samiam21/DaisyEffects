@@ -1,6 +1,6 @@
 #include "Echo.h"
 
-void Echo::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, unsigned long *avgTempo)
+void Echo::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *newBpm)
 {
     hw = hardware;
     display = daisyDisplay;
@@ -13,7 +13,7 @@ void Echo::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, unsigne
     del_line.SetDelay(currentTempoSamples);
 
     // Initialize the tap tempo parameters
-    pedalTapTempoAvg = avgTempo;
+    //pedalTapTempoAvg = newBpm;
 
     // Initialize the knobs
     mixLevelKnob.Init(hw, KNOB_1_CHN, mixLevel, mixLevelMin, mixLevelMax);
