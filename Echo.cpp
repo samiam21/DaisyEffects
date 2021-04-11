@@ -4,6 +4,7 @@ void Echo::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *ne
 {
     hw = hardware;
     display = daisyDisplay;
+    sample_rate = hw->AudioSampleRate();
 
     // Init Delay Line
     del_line.Init();
@@ -74,10 +75,7 @@ void Echo::Loop(bool allowEffectControl)
             int bpm = round((int)tempo / 2) * 2;
             currentTempoSamples = CalculateSampleFromBpm(bpm);
             del_line.SetDelay(currentTempoSamples);
-            //float test = (float)bpm / 60.f;
-            //del_line.SetDelay(tempo);
 
-            //debugPrintlnF(hw, "test %f", tempo);
             debugPrintlnF(hw, "Updated the tempo to: %d bpm", bpm);
             updateEditModeKnobValue(display, 2, bpm);
         }
@@ -154,9 +152,9 @@ void Echo::TypeSwitcherLoopControl()
     }
 }
 
-size_t Echo::CalculateSampleFromBpm(int bpm)
+float Echo::CalculateSampleFromBpm(int bpm)
 {
-    return ((delayMaxSize / bpm) * bpmMultiplier) * tempoModifier;
+    return (sample_rate) * (60.f / (float)bpm);
 }
 
 char *Echo::GetEffectName()

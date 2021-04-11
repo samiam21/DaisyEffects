@@ -78,7 +78,8 @@ void Metronome::Loop(bool allowEffectControl)
         if (tempoKnob.SetNewValue(tempo))
         {
             // Convert tempo float to an int
-            int t = round((int)tempo / 2) * 2;
+            //int t = round((int)tempo / 2) * 2;
+            int t = round((int)tempo);
             tick.SetFreq(GetTempoFromBpm(t));
 
             debugPrintlnF(hw, "Updated the tempo to: %d", t);

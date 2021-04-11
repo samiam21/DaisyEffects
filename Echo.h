@@ -44,6 +44,9 @@ enum DelayType
     DT_UNSET = 99
 };
 
+static const size_t delayMaxSize = 124000;
+static DelayLine<float, delayMaxSize> DSY_SDRAM_BSS del_line;
+
 class Echo : public IEffect
 {
 public:
@@ -62,9 +65,10 @@ private:
 
     void TapTempoInterruptHandler();
     void TypeSwitcherLoopControl();
-    size_t CalculateSampleFromBpm(int bpm);
+    float CalculateSampleFromBpm(int bpm);
 
     DaisySeed *hw;
+    float sample_rate;
 
     // Input handlers
     NFNToggle typeSwitcher;
@@ -72,9 +76,7 @@ private:
     Knob decayKnob;
     Knob tempoKnob;
 
-    static const size_t delayMaxSize = 124000;
     static const size_t initialTempoBpm = 90;
-    static const size_t bpmMultiplier = 60;
 
     // Decay constants
     const float minDecayValue = 0.0f;
@@ -86,7 +88,7 @@ private:
 
     // Tempo constants
     const float tempoMin = 48.0f;
-    const float tempoMax = 240.0f;
+    const float tempoMax = 132.0f;
 
     // Mutable parameters
     DelayLine<float, delayMaxSize> del_line;
@@ -95,7 +97,7 @@ private:
     float tempo = 0.0f;
 
     // Tap tempo mutables
-    size_t currentTempoSamples;
+    float currentTempoSamples;
     int currentTapTempoBpm = 0;
     int *pedalTapTempoBpm;
 

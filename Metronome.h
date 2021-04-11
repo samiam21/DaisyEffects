@@ -71,8 +71,8 @@ private:
     // Adjustable parameters
     const float volumeLevelMin = 0.0f;
     const float volumeLevelMax = 2.0f;
-    const float tempoMin = 30.0f;
-    const float tempoMax = 240.0f;
+    const float tempoMin = 48.0f;
+    const float tempoMax = 132.0f;
 
     float volume = 1.0f;
     float tempo = 90.0f;
