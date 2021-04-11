@@ -44,7 +44,7 @@ enum DelayType
     DT_UNSET = 99
 };
 
-static const size_t delayMaxSize = 124000;
+static const size_t delayMaxSize = 192000;
 static DelayLine<float, delayMaxSize> DSY_SDRAM_BSS del_line;
 
 class Echo : public IEffect
