@@ -1,24 +1,25 @@
 #include "Echo.h"
 
-void Echo::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, unsigned long *avgTempo)
+void Echo::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *newBpm)
 {
     hw = hardware;
     display = daisyDisplay;
+    sample_rate = hw->AudioSampleRate();
 
     // Init Delay Line
     del_line.Init();
 
     // Set Delay Time in Samples
-    currentTempoSamples = ((delayMaxSize / initialTempoBpm) * 30) * tempoModifier;
+    currentTempoSamples = CalculateSampleFromBpm(initialTempoBpm);
     del_line.SetDelay(currentTempoSamples);
 
     // Initialize the tap tempo parameters
-    pedalTapTempoAvg = avgTempo;
+    pedalTapTempoBpm = newBpm;
 
     // Initialize the knobs
     mixLevelKnob.Init(hw, KNOB_1_CHN, mixLevel, mixLevelMin, mixLevelMax);
     decayKnob.Init(hw, KNOB_2_CHN, decayValue, minDecayValue, maxDecayValue);
-    speedKnob.Init(hw, KNOB_3_CHN, speed, speedMin, speedMax);
+    tempoKnob.Init(hw, KNOB_3_CHN, tempo, tempoMin, tempoMax);
 
     // Initialize the type
     typeSwitcher.Init(hw->GetPin(effectSPDT1Pin1), hw->GetPin(effectSPDT1Pin2));
@@ -67,14 +68,16 @@ void Echo::Loop(bool allowEffectControl)
             updateEditModeKnobValue(display, 1, decayValue);
         }
 
-        // Update the speed if the knob has been moved
-        if (speedKnob.SetNewValue(speed))
+        // Update the tempo if the knob has been moved
+        if (tempoKnob.SetNewValue(tempo))
         {
-            currentTempoSamples = ((delayMaxSize / speed) * 30) * tempoModifier;
+            // Round tempo to nearest 2 and set the new delay
+            int bpm = round((int)tempo / 2) * 2;
+            currentTempoSamples = CalculateSampleFromBpm(bpm);
             del_line.SetDelay(currentTempoSamples);
 
-            debugPrintlnF(hw, "Updated the speed to: %f", speed);
-            updateEditModeKnobValue(display, 2, speed);
+            debugPrintlnF(hw, "Updated the tempo to: %d bpm", bpm);
+            updateEditModeKnobValue(display, 2, bpm);
         }
 
         // Handle type
@@ -82,12 +85,12 @@ void Echo::Loop(bool allowEffectControl)
     }
 
     // Check for an updated tap tempo
-    if (currentTapTempoAvg != *pedalTapTempoAvg)
+    if (currentTapTempoBpm != *pedalTapTempoBpm)
     {
-        currentTapTempoAvg = *pedalTapTempoAvg;
+        currentTapTempoBpm = *pedalTapTempoBpm;
 
         // Set the new delay based on the calculated duration
-        currentTempoSamples = ((delayMaxSize * (size_t)currentTapTempoAvg) / 1000) * tempoModifier;
+        currentTempoSamples = CalculateSampleFromBpm(currentTapTempoBpm);
         del_line.SetDelay(currentTempoSamples);
     }
 }
@@ -149,6 +152,11 @@ void Echo::TypeSwitcherLoopControl()
     }
 }
 
+float Echo::CalculateSampleFromBpm(int bpm)
+{
+    return (sample_rate) * (60.f / (float)bpm);
+}
+
 char *Echo::GetEffectName()
 {
     return (char *)"ECHO";
@@ -182,7 +190,7 @@ EffectSettings Echo::GetEffectSettings()
     // Add levels to the effect settings
     effectSettings.knobSettings[0] = mixLevel;
     effectSettings.knobSettings[1] = decayValue;
-    effectSettings.knobSettings[2] = speed;
+    effectSettings.knobSettings[2] = tempo;
 
     // Add the wave shape to the effect settings
     effectSettings.togglePosition = typeSwitcher.ReadToggle();
@@ -225,9 +233,9 @@ void Echo::SetEffectSettings(EffectSettings effectSettings)
     // Update levels from effect settings
     mixLevel = effectSettings.knobSettings[0];
     decayValue = effectSettings.knobSettings[1];
-    speed = effectSettings.knobSettings[2];
+    tempo = effectSettings.knobSettings[2];
 
     // Update tempo from speed knob
-    currentTempoSamples = ((delayMaxSize / speed) * 30) * tempoModifier;
+    currentTempoSamples = ((delayMaxSize / tempo) * 30) * tempoModifier;
     del_line.SetDelay(currentTempoSamples);
 }

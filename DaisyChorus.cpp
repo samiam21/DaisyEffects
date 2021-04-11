@@ -1,6 +1,6 @@
 #include "DaisyChorus.h"
 
-void DaisyChorus::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, unsigned long *avgTempo)
+void DaisyChorus::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *newBpm)
 {
     hw = hardware;
     display = daisyDisplay;

@@ -1,6 +1,6 @@
 #include "Shifter.h"
 
-void Shifter::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, unsigned long *avgTempo)
+void Shifter::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *newBpm)
 {
     hw = hardware;
     display = daisyDisplay;

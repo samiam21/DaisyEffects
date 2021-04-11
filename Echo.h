@@ -25,7 +25,7 @@ using namespace daisysp;
  * 
  * Knob 1 - Mix
  * Knob 2 - Decay
- * Knob 3 - Speed
+ * Knob 3 - Tempo
  * Knob 4 - 
  * 
  * LED 1 - 
@@ -44,10 +44,13 @@ enum DelayType
     DT_UNSET = 99
 };
 
+static const size_t delayMaxSize = 124000;
+static DelayLine<float, delayMaxSize> DSY_SDRAM_BSS del_line;
+
 class Echo : public IEffect
 {
 public:
-    void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, unsigned long *avgTempo);
+    void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *newBpm);
     void Cleanup();
     float Process(float in);
     void Loop(bool allowEffectControl);
@@ -58,21 +61,21 @@ public:
     void UpdateToggleDisplay();
 
 private:
-    const char *knobNames[MAX_KNOBS] = {(char *)"MIX", (char *)"DECAY", (char *)"SPEED", (char *)""};
+    const char *knobNames[MAX_KNOBS] = {(char *)"MIX", (char *)"DECAY", (char *)"TEMPO", (char *)""};
 
     void TapTempoInterruptHandler();
     void TypeSwitcherLoopControl();
+    float CalculateSampleFromBpm(int bpm);
 
     DaisySeed *hw;
+    float sample_rate;
 
     // Input handlers
     NFNToggle typeSwitcher;
     Knob mixLevelKnob;
     Knob decayKnob;
-    Knob speedKnob;
-    //Button tapTempoButton;
+    Knob tempoKnob;
 
-    static const size_t delayMaxSize = 48000;
     static const size_t initialTempoBpm = 90;
 
     // Decay constants
@@ -83,21 +86,20 @@ private:
     const float mixLevelMin = 0.0f;
     const float mixLevelMax = 1.0f;
 
-    // Volume boost constants
-    const float speedMin = 30.0f;
-    const float speedMax = 180.0f;
+    // Tempo constants
+    const float tempoMin = 48.0f;
+    const float tempoMax = 132.0f;
 
     // Mutable parameters
     DelayLine<float, delayMaxSize> del_line;
     float decayValue = 0.5f;
     float mixLevel = 0.5f;
-    float speed = 0.0f;
+    float tempo = 0.0f;
 
     // Tap tempo mutables
-    size_t currentTempoSamples;
-    unsigned long tapTempoTime = 0;
-    unsigned long currentTapTempoAvg = 0;
-    unsigned long *pedalTapTempoAvg;
+    float currentTempoSamples;
+    int currentTapTempoBpm = 0;
+    int *pedalTapTempoBpm;
 
     // Type switcher mutables
     DelayType currentDelayType = DT_UNSET;
