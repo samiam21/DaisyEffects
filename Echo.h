@@ -72,7 +72,7 @@ private:
     Knob decayKnob;
     Knob tempoKnob;
 
-    static const size_t delayMaxSize = 96000;
+    static const size_t delayMaxSize = 124000;
     static const size_t initialTempoBpm = 90;
     static const size_t bpmMultiplier = 60;
 
@@ -85,11 +85,11 @@ private:
     const float mixLevelMax = 1.0f;
 
     // Tempo constants
-    const float tempoMin = 30.0f;
+    const float tempoMin = 48.0f;
     const float tempoMax = 240.0f;
 
     // Mutable parameters
-    DelayLine<size_t, delayMaxSize> del_line;
+    DelayLine<float, delayMaxSize> del_line;
     float decayValue = 0.5f;
     float mixLevel = 0.5f;
     float tempo = 0.0f;

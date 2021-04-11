@@ -24,7 +24,7 @@ using namespace daisysp;
  * 
  * Knob 1 - Volume
  * Knob 2 - Tempo
- * Knob 3 - Time Signature
+ * Knob 3 - 
  * Knob 4 - 
  * 
  * LED 1 - 

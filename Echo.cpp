@@ -74,8 +74,10 @@ void Echo::Loop(bool allowEffectControl)
             int bpm = round((int)tempo / 2) * 2;
             currentTempoSamples = CalculateSampleFromBpm(bpm);
             del_line.SetDelay(currentTempoSamples);
+            //float test = (float)bpm / 60.f;
+            //del_line.SetDelay(tempo);
 
-            debugPrintlnF(hw, "test %d", currentTempoSamples);
+            //debugPrintlnF(hw, "test %f", tempo);
             debugPrintlnF(hw, "Updated the tempo to: %d bpm", bpm);
             updateEditModeKnobValue(display, 2, bpm);
         }
