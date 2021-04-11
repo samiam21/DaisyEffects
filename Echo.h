@@ -91,7 +91,6 @@ private:
     const float tempoMax = 132.0f;
 
     // Mutable parameters
-    DelayLine<float, delayMaxSize> del_line;
     float decayValue = 0.5f;
     float mixLevel = 0.5f;
     float tempo = 0.0f;
