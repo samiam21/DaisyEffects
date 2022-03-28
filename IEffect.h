@@ -14,7 +14,7 @@ public:
     virtual void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *newBpm = nullptr) {}
     virtual void Cleanup() {}
     virtual float Process(float in) { return 0; }
-    virtual void Loop(bool allowEffectControl) {}
+    virtual void Loop(bool allowEffectControl, bool isTapPressed = false) {}
     virtual char *GetEffectName() { return (char *)"uh-oh"; }
     virtual char **GetKnobNames() { return (char **)""; }
     virtual EffectSettings GetEffectSettings() { return effectSettings; }
