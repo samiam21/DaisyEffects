@@ -110,5 +110,9 @@ EffectSettings StompBox::GetEffectSettings()
 
 void StompBox::SetEffectSettings(EffectSettings effectSettings)
 {
-    // Effect settings are updated as they change, no need to do anything special here
+    // Update the effect settings
+    level = effectSettings.knobSettings[0];
+    decay = effectSettings.knobSettings[1];
+    tone = effectSettings.knobSettings[1];
+    accent = effectSettings.knobSettings[1];
 }
