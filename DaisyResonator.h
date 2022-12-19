@@ -1,15 +1,7 @@
 #ifndef DAISY_RESONATOR_H
 #define DAISY_RESONATOR_H
 
-#include "daisy_seed.h"
-#include "daisysp.h"
 #include "IEffect.h"
-#include "../../../include/PedalConfig.h"
-#include "../Inputs/Knob.h"
-#include "../Inputs/NFNToggle.h"
-
-using namespace daisy;
-using namespace daisysp;
 
 /**********************************************
  * Daisy Resonator Effect
@@ -36,7 +28,7 @@ using namespace daisysp;
 class DaisyResonator : public IEffect
 {
 public:
-    void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *newBpm);
+    void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay = nullptr, int *newBpm = nullptr);
     void Cleanup();
     float Process(float in);
     void Loop(bool allowEffectControl);

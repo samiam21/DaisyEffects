@@ -2,16 +2,23 @@
 #define IEFFECT_H
 
 #include "daisy_seed.h"
+#include "daisysp.h"
 #include "../../include/PedalConfig.h"
-#include "../../include/Storage.h"
-#include "../../src/DaisyDisplay.h"
+#include "Hardware/Storage.h"
+#include "Hardware/DaisyDisplay.h"
+#include "../DaisyInputs/Knob.h"
+#include "../DaisyInputs/Button.h"
+#include "../DaisyInputs/NFNToggle.h"
+
+using namespace daisy;
+using namespace daisysp;
 
 class IEffect
 {
 public:
     IEffect() {}
     virtual ~IEffect() {}
-    virtual void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *newBpm = nullptr) {}
+    virtual void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay = nullptr, int *newBpm = nullptr) {}
     virtual void Cleanup() {}
     virtual float Process(float in) { return 0; }
     virtual void Loop(bool allowEffectControl, bool isTapPressed = false) {}

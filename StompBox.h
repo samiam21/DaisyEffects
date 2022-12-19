@@ -1,14 +1,7 @@
 #ifndef STOMPBOX_H
 #define STOMPBOX_H
 
-#include "daisy_seed.h"
-#include "daisysp.h"
 #include "IEffect.h"
-#include "../../../include/PedalConfig.h"
-#include "../Inputs/Knob.h"
-
-using namespace daisy;
-using namespace daisysp;
 
 /**********************************************
  * Stomp Box Effect
@@ -35,7 +28,7 @@ using namespace daisysp;
 class StompBox : public IEffect
 {
 public:
-    void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *newBpm);
+    void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay = nullptr, int *newBpm = nullptr);
     void Cleanup();
     float Process(float in);
     void Loop(bool allowEffectControl, bool isTapPressed = false);

@@ -1,13 +1,7 @@
 #ifndef REVERB_H
 #define REVERB_H
 
-#include "daisy_seed.h"
-#include "daisysp.h"
 #include "IEffect.h"
-#include "../../../include/PedalConfig.h"
-#include "../Inputs/Knob.h"
-
-using namespace daisysp;
 
 /**********************************************
  * Reverb Effect
@@ -31,13 +25,13 @@ using namespace daisysp;
  * LED 4 -
  **********************************************/
 
-//#define DSY_REVERBSC_MAX_SIZE 791488
+// #define DSY_REVERBSC_MAX_SIZE 791488
 static ReverbSc DSY_SDRAM_BSS verb;
 
 class Reverb : public IEffect
 {
 public:
-    void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *newBpm);
+    void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay = nullptr, int *newBpm = nullptr);
     void Cleanup();
     float Process(float in);
     void Loop(bool allowEffectControl);
