@@ -5,16 +5,30 @@ void CleanBoost::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, i
     hw = hardware;
     display = daisyDisplay;
 
-    boostKnob.Init(hw, KNOB_1_CHN, boostLevel, boostLevelMin, boostLevelMax);
+    boostKnob.Init(hw, boostKnobChannel, boostLevel, boostLevelMin, boostLevelMax);
+    onOffToggle.Init(hw->GetPin(onOffTogglePin));
 }
 
 float CleanBoost::Process(float in)
 {
-    return in * boostLevel;
+    if (audioOn)
+        return in * boostLevel;
+    else
+        return 0;
 }
 
 void CleanBoost::Cleanup()
 {
+}
+
+void CleanBoost::ConfigureKnobPositions(int boostChannel)
+{
+    boostKnobChannel = boostChannel;
+}
+
+void CleanBoost::ConfigureTogglePositions(int onOffPin)
+{
+    onOffTogglePin = onOffPin;
 }
 
 void CleanBoost::Loop(bool allowEffectControl)
@@ -31,6 +45,9 @@ void CleanBoost::Loop(bool allowEffectControl)
             // Update the effect settings
             effectSettings.knobSettings[0] = boostLevel;
         }
+
+        // Toggle controls audio on or off
+        audioOn = onOffToggle.ReadToggle();
     }
 }
 

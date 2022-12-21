@@ -9,6 +9,7 @@
 #include "../DaisyInputs/Knob.h"
 #include "../DaisyInputs/Button.h"
 #include "../DaisyInputs/NFNToggle.h"
+#include "../DaisyInputs/SimpleToggle.h"
 
 using namespace daisy;
 using namespace daisysp;
@@ -27,6 +28,8 @@ public:
     virtual EffectSettings GetEffectSettings() { return effectSettings; }
     virtual void SetEffectSettings(EffectSettings effectSettings) {}
     virtual void UpdateToggleDisplay() {}
+    virtual void ConfigureKnobPositions(...) {}
+    virtual void ConfigureTogglePositions(...) {}
 
 protected:
     daisy::DaisySeed *hw;
