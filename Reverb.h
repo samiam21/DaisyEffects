@@ -39,18 +39,23 @@ public:
     char **GetKnobNames();
     EffectSettings GetEffectSettings();
     void SetEffectSettings(EffectSettings effectSettings);
+    void ConfigureKnobPositions(int mixChannel, int decayChannel, int toneChannel);
 
 private:
     const char *knobNames[MAX_KNOBS] = {(char *)"MIX", (char *)"DECAY", (char *)"TONE", (char *)""};
 
-    const float decayMin = 0.4f;
+    const float decayMin = 0.89f;
     const float decayMax = 0.99f;
     const float toneMin = 0.0f;
 
     float sample_rate;
     float decay = 1.0f;
-    float tone = 0.0f;
-    float mixLevel = 0.0f;
+    float tone = 0.5f;
+    float mixLevel = 0.5f;
+
+    int mixKnobChannel = KNOB_1_CHN;
+    int decayKnobChannel = KNOB_2_CHN;
+    int toneKnobChannel = KNOB_3_CHN;
 
     Knob decayKnob;
     Knob toneKnob;

@@ -9,9 +9,9 @@ void Reverb::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *
     sample_rate = hw->AudioSampleRate();
 
     // Initialize the knobs
-    mixKnob.Init(hw, KNOB_1_CHN, mixLevel);
-    decayKnob.Init(hw, KNOB_2_CHN, decay, decayMin, decayMax);
-    toneKnob.Init(hw, KNOB_3_CHN, tone, toneMin, sample_rate / 2.0f);
+    mixKnob.Init(hw, mixKnobChannel, mixLevel);
+    decayKnob.Init(hw, decayKnobChannel, decay, decayMin, decayMax);
+    toneKnob.Init(hw, toneKnobChannel, tone, toneMin, sample_rate / 2.0f);
 
     // Initialize the reverb (check sample rate)
     int ret = -1;
@@ -38,20 +38,27 @@ void Reverb::Cleanup()
 {
 }
 
+void Reverb::ConfigureKnobPositions(int mixChannel, int decayChannel, int toneChannel)
+{
+    mixKnobChannel = mixChannel;
+    decayKnobChannel = decayChannel;
+    toneKnobChannel = toneChannel;
+}
+
 void Reverb::Loop(bool allowEffectControl)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)
     {
         // Update the mix level
-        if (mixKnob.SetNewValue(mixLevel))
+        if (mixKnobChannel != -1 && mixKnob.SetNewValue(mixLevel))
         {
             debugPrintlnF(hw, "Updated the mix level to: %f", mixLevel);
             updateEditModeKnobValue(display, 0, mixLevel);
         }
 
         // Knob 1 controls the ratio
-        if (decayKnob.SetNewValue(decay))
+        if (decayKnobChannel != -1 && decayKnob.SetNewValue(decay))
         {
             verb.SetFeedback(decay);
             debugPrintlnF(hw, "Updated the decay to: %f", decay);
@@ -62,7 +69,7 @@ void Reverb::Loop(bool allowEffectControl)
         }
 
         // Knob 2 controls the threshold
-        if (toneKnob.SetNewValue(tone))
+        if (toneKnobChannel != -1 && toneKnob.SetNewValue(tone))
         {
             verb.SetLpFreq(tone);
             debugPrintlnF(hw, "Updated the tone to: %f", tone);
