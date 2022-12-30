@@ -50,12 +50,12 @@ private:
 
     float sample_rate;
     float decay = 1.0f;
-    float tone = 0.5f;
+    float tone = 5000.f;
     float mixLevel = 0.5f;
 
-    int mixKnobChannel = KNOB_1_CHN;
-    int decayKnobChannel = KNOB_2_CHN;
-    int toneKnobChannel = KNOB_3_CHN;
+    uint8_t mixKnobChannel = KNOB_1_CHN;
+    uint8_t decayKnobChannel = KNOB_2_CHN;
+    uint8_t toneKnobChannel = KNOB_3_CHN;
 
     Knob decayKnob;
     Knob toneKnob;

@@ -51,14 +51,14 @@ void Reverb::Loop(bool allowEffectControl)
     if (allowEffectControl)
     {
         // Update the mix level
-        if (mixKnobChannel != -1 && mixKnob.SetNewValue(mixLevel))
+        if (mixKnobChannel != KNOB_NO_CHN && mixKnob.SetNewValue(mixLevel))
         {
             debugPrintlnF(hw, "Updated the mix level to: %f", mixLevel);
             updateEditModeKnobValue(display, 0, mixLevel);
         }
 
         // Knob 1 controls the ratio
-        if (decayKnobChannel != -1 && decayKnob.SetNewValue(decay))
+        if (decayKnobChannel != KNOB_NO_CHN && decayKnob.SetNewValue(decay))
         {
             verb.SetFeedback(decay);
             debugPrintlnF(hw, "Updated the decay to: %f", decay);
@@ -69,7 +69,7 @@ void Reverb::Loop(bool allowEffectControl)
         }
 
         // Knob 2 controls the threshold
-        if (toneKnobChannel != -1 && toneKnob.SetNewValue(tone))
+        if (toneKnobChannel != KNOB_NO_CHN && toneKnob.SetNewValue(tone))
         {
             verb.SetLpFreq(tone);
             debugPrintlnF(hw, "Updated the tone to: %f", tone);

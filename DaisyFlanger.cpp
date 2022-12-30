@@ -51,14 +51,14 @@ void DaisyFlanger::Loop(bool allowEffectControl)
     if (allowEffectControl)
     {
         // Knob 1 controls the mix level
-        if (mixKnobChannel != -1 && mixKnob.SetNewValue(mixLevel))
+        if (mixKnobChannel != KNOB_NO_CHN && mixKnob.SetNewValue(mixLevel))
         {
             debugPrintlnF(hw, "Updated the mix level to: %f", mixLevel);
             updateEditModeKnobValue(display, 0, mixLevel);
         }
 
         // Knob 2 controls the LFO rate
-        if (rateKnobChannel != -1 && rateKnob.SetNewValue(rate))
+        if (rateKnobChannel != KNOB_NO_CHN && rateKnob.SetNewValue(rate))
         {
             flanger.SetLfoFreq(rate);
 
@@ -67,7 +67,7 @@ void DaisyFlanger::Loop(bool allowEffectControl)
         }
 
         // Knob 3 controls the LFO width
-        if (widthKnobChannel != -1 && widthKnob.SetNewValue(width))
+        if (widthKnobChannel != KNOB_NO_CHN && widthKnob.SetNewValue(width))
         {
             flanger.SetLfoDepth(width);
 
@@ -76,7 +76,7 @@ void DaisyFlanger::Loop(bool allowEffectControl)
         }
 
         // Knob 4 controls the feedback
-        if (feedbackKnobChannel != -1 && feedbackKnob.SetNewValue(feedback))
+        if (feedbackKnobChannel != KNOB_NO_CHN && feedbackKnob.SetNewValue(feedback))
         {
             flanger.SetFeedback(feedback);
 

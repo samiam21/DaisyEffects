@@ -51,14 +51,14 @@ void DaisyChorus::Loop(bool allowEffectControl)
     if (allowEffectControl)
     {
         // Knob 1 controls the mix level
-        if (mixKnobChannel != -1 && mixKnob.SetNewValue(mixLevel))
+        if (mixKnobChannel != KNOB_NO_CHN && mixKnob.SetNewValue(mixLevel))
         {
             debugPrintlnF(hw, "Updated the mix level to: %f", mixLevel);
             updateEditModeKnobValue(display, 0, mixLevel);
         }
 
         // Knob 2 controls the LFO rate
-        if (rateKnobChannel != -1 && rateKnob.SetNewValue(rate))
+        if (rateKnobChannel != KNOB_NO_CHN && rateKnob.SetNewValue(rate))
         {
             chorus.SetLfoFreq(rate);
 
@@ -67,7 +67,7 @@ void DaisyChorus::Loop(bool allowEffectControl)
         }
 
         // Knob 3 controls the LFO width
-        if (widthKnobChannel != -1 && widthKnob.SetNewValue(width))
+        if (widthKnobChannel != KNOB_NO_CHN && widthKnob.SetNewValue(width))
         {
             chorus.SetLfoDepth(width);
 
@@ -76,7 +76,7 @@ void DaisyChorus::Loop(bool allowEffectControl)
         }
 
         // Knob 4 controls the delay
-        if (delayKnobChannel != -1 && delayKnob.SetNewValue(delay))
+        if (delayKnobChannel != KNOB_NO_CHN && delayKnob.SetNewValue(delay))
         {
             chorus.SetDelay(delay);
 

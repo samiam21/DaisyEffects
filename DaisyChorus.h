@@ -44,12 +44,12 @@ private:
     float mixLevel = 0.5f;
     float rate = 0.5f;
     float width = 0.5f;
-    float delay = 0.15f;
+    float delay = 1.f;
 
-    int mixKnobChannel = KNOB_1_CHN;
-    int rateKnobChannel = KNOB_2_CHN;
-    int widthKnobChannel = KNOB_3_CHN;
-    int delayKnobChannel = KNOB_4_CHN;
+    uint8_t mixKnobChannel = KNOB_1_CHN;
+    uint8_t rateKnobChannel = KNOB_2_CHN;
+    uint8_t widthKnobChannel = KNOB_3_CHN;
+    uint8_t delayKnobChannel = KNOB_4_CHN;
 
     Knob mixKnob;
     Knob rateKnob;
