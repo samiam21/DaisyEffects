@@ -6,10 +6,10 @@ void DaisyFlanger::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay,
     display = daisyDisplay;
 
     // Initialize the knobs
-    mixKnob.Init(hw, KNOB_1_CHN, mixLevel);
-    rateKnob.Init(hw, KNOB_2_CHN, rate);
-    widthKnob.Init(hw, KNOB_3_CHN, width);
-    feedbackKnob.Init(hw, KNOB_4_CHN, feedback);
+    mixKnob.Init(hw, mixKnobChannel, mixLevel);
+    rateKnob.Init(hw, rateKnobChannel, rate);
+    widthKnob.Init(hw, widthKnobChannel, width);
+    feedbackKnob.Init(hw, feedbackKnobChannel, feedback);
 
     // Initialize the Flanger
     float sample_rate = hw->AudioSampleRate();
@@ -37,20 +37,28 @@ void DaisyFlanger::Cleanup()
 {
 }
 
+void DaisyFlanger::ConfigureKnobPositions(int mixChannel, int rateChannel, int widthChannel, int feedbackChannel)
+{
+    mixKnobChannel = mixChannel;
+    rateKnobChannel = rateChannel;
+    widthKnobChannel = widthChannel;
+    feedbackKnobChannel = feedbackChannel;
+}
+
 void DaisyFlanger::Loop(bool allowEffectControl)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)
     {
         // Knob 1 controls the mix level
-        if (mixKnob.SetNewValue(mixLevel))
+        if (mixKnobChannel != -1 && mixKnob.SetNewValue(mixLevel))
         {
             debugPrintlnF(hw, "Updated the mix level to: %f", mixLevel);
             updateEditModeKnobValue(display, 0, mixLevel);
         }
 
         // Knob 2 controls the LFO rate
-        if (rateKnob.SetNewValue(rate))
+        if (rateKnobChannel != -1 && rateKnob.SetNewValue(rate))
         {
             flanger.SetLfoFreq(rate);
 
@@ -59,7 +67,7 @@ void DaisyFlanger::Loop(bool allowEffectControl)
         }
 
         // Knob 3 controls the LFO width
-        if (widthKnob.SetNewValue(width))
+        if (widthKnobChannel != -1 && widthKnob.SetNewValue(width))
         {
             flanger.SetLfoDepth(width);
 
@@ -68,7 +76,7 @@ void DaisyFlanger::Loop(bool allowEffectControl)
         }
 
         // Knob 4 controls the feedback
-        if (feedbackKnob.SetNewValue(feedback))
+        if (feedbackKnobChannel != -1 && feedbackKnob.SetNewValue(feedback))
         {
             flanger.SetFeedback(feedback);
 
