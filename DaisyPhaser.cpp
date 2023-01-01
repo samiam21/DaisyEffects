@@ -6,15 +6,16 @@ void DaisyPhaser::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, 
     display = daisyDisplay;
 
     // Initialize the knobs
-    mixKnob.Init(hw, KNOB_1_CHN, mixLevel);
-    depthKnob.Init(hw, KNOB_2_CHN, depth);
-    frequencyKnob.Init(hw, KNOB_3_CHN, frequency, frequencyMin, frequencyMax);
-    feedbackKnob.Init(hw, KNOB_4_CHN, feedback);
+    mixKnob.Init(hw, mixKnobChannel, mixLevel);
+    rateKnob.Init(hw, rateKnobChannel, rate, minRate, maxRate);
+    widthKnob.Init(hw, widthKnobChannel, width);
+    feedbackKnob.Init(hw, feedbackKnobChannel, feedback);
 
     // Initialize the Flanger
-    phaser.Init(hw->AudioSampleRate());
-    phaser.SetLfoDepth(depth);
-    phaser.SetFreq(frequency);
+    float sample_rate = hw->AudioSampleRate();
+    phaser.Init(sample_rate);
+    phaser.SetLfoFreq(rate);
+    phaser.SetLfoDepth(width);
     phaser.SetFeedback(feedback);
 }
 
@@ -36,38 +37,46 @@ void DaisyPhaser::Cleanup()
 {
 }
 
+void DaisyPhaser::ConfigureKnobPositions(int mixChannel, int rateChannel, int widthChannel, int feedbackChannel)
+{
+    mixKnobChannel = mixChannel;
+    rateKnobChannel = rateChannel;
+    widthKnobChannel = widthChannel;
+    feedbackKnobChannel = feedbackChannel;
+}
+
 void DaisyPhaser::Loop(bool allowEffectControl)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)
     {
         // Knob 1 controls the mix level
-        if (mixKnob.SetNewValue(mixLevel))
+        if (mixKnobChannel != KNOB_NO_CHN && mixKnob.SetNewValue(mixLevel))
         {
             debugPrintlnF(hw, "Updated the mix level to: %f", mixLevel);
             updateEditModeKnobValue(display, 0, mixLevel);
         }
 
-        // Knob 2 controls the LFO depth
-        if (depthKnob.SetNewValue(depth))
+        // Knob 2 controls the LFO rate
+        if (rateKnobChannel != KNOB_NO_CHN && rateKnob.SetNewValue(rate))
         {
-            phaser.SetLfoDepth(depth);
+            phaser.SetLfoFreq(rate);
 
-            debugPrintlnF(hw, "Updated the depth to: %f", depth);
-            updateEditModeKnobValue(display, 1, depth);
+            debugPrintlnF(hw, "Updated the rate to: %f", rate);
+            updateEditModeKnobValue(display, 1, rate);
         }
 
-        // Knob 3 controls the frequency
-        if (frequencyKnob.SetNewValue(frequency))
+        // Knob 3 controls the LFO width
+        if (widthKnobChannel != KNOB_NO_CHN && widthKnob.SetNewValue(width))
         {
-            phaser.SetFreq(frequency);
+            phaser.SetLfoDepth(width);
 
-            debugPrintlnF(hw, "Updated the frequency to: %f", frequency);
-            updateEditModeKnobValue(display, 2, frequency);
+            debugPrintlnF(hw, "Updated the width to: %f", width);
+            updateEditModeKnobValue(display, 2, width);
         }
 
         // Knob 4 controls the feedback
-        if (feedbackKnob.SetNewValue(feedback))
+        if (feedbackKnobChannel != KNOB_NO_CHN && feedbackKnob.SetNewValue(feedback))
         {
             phaser.SetFeedback(feedback);
 
@@ -91,8 +100,8 @@ EffectSettings DaisyPhaser::GetEffectSettings()
 {
     // Add levels to the effect settings
     effectSettings.knobSettings[0] = mixLevel;
-    effectSettings.knobSettings[1] = depth;
-    effectSettings.knobSettings[2] = frequency;
+    effectSettings.knobSettings[1] = rate;
+    effectSettings.knobSettings[2] = width;
     effectSettings.knobSettings[3] = feedback;
 
     // Return the settings
@@ -103,10 +112,10 @@ void DaisyPhaser::SetEffectSettings(EffectSettings effectSettings)
 {
     // Update levels with effect settings
     mixLevel = effectSettings.knobSettings[0];
-    depth = effectSettings.knobSettings[1];
-    phaser.SetLfoDepth(depth);
-    frequency = effectSettings.knobSettings[2];
-    phaser.SetFreq(frequency);
+    rate = effectSettings.knobSettings[1];
+    phaser.SetLfoFreq(rate);
+    width = effectSettings.knobSettings[2];
+    phaser.SetLfoDepth(width);
     feedback = effectSettings.knobSettings[3];
     phaser.SetFeedback(feedback);
 }

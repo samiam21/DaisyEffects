@@ -15,7 +15,7 @@
  * SPDT 2 -
  *
  * Knob 1 - Mix
- * Knob 2 - LFO Rate
+ * Knob 2 - Rate
  * Knob 3 - Width
  * Knob 4 - Feedback
  *
@@ -36,21 +36,27 @@ public:
     char **GetKnobNames();
     EffectSettings GetEffectSettings();
     void SetEffectSettings(EffectSettings effectSettings);
+    void ConfigureKnobPositions(int mixChannel, int rateChannel, int widthChannel, int feedbackChannel);
 
 private:
-    const char *knobNames[MAX_KNOBS] = {(char *)"MIX", (char *)"DEPTH", (char *)"FREQ", (char *)"FEEDBK"};
+    const char *knobNames[MAX_KNOBS] = {(char *)"MIX", (char *)"RATE", (char *)"WIDTH", (char *)"FEEDBK"};
 
-    const float frequencyMin = 0.0f;
-    const float frequencyMax = 1000.0f;
+    const float minRate = 0.f;
+    const float maxRate = 1000.f;
 
-    float mixLevel = 0.0f;
-    float depth = 0.0f;
-    float frequency = 0.0f;
-    float feedback = 0.0f;
+    float mixLevel = 1.f;
+    float rate = 0.5f;
+    float width = 0.5f;
+    float feedback = 0.88f;
+
+    uint8_t mixKnobChannel = KNOB_1_CHN;
+    uint8_t rateKnobChannel = KNOB_2_CHN;
+    uint8_t widthKnobChannel = KNOB_3_CHN;
+    uint8_t feedbackKnobChannel = KNOB_4_CHN;
 
     Knob mixKnob;
-    Knob depthKnob;
-    Knob frequencyKnob;
+    Knob rateKnob;
+    Knob widthKnob;
     Knob feedbackKnob;
 
     Phaser phaser;
