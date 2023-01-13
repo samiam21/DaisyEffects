@@ -37,6 +37,8 @@ public:
     EffectSettings GetEffectSettings();
     void SetEffectSettings(EffectSettings effectSettings);
     void UpdateToggleDisplay();
+    void ConfigureKnobPositions(int mixChannel, int rateChannel, int widthChannel);
+    void ConfigureTogglePositions(int waveformToggle1, int waveformToggle2);
 
 private:
     const char *knobNames[MAX_KNOBS] = {(char *)"MIX", (char *)"RATE", (char *)"WIDTH", (char *)""};
@@ -48,6 +50,12 @@ private:
     float rate = 0.0f;
     float width = 0.0f;
     int waveform = Oscillator::WAVE_SIN;
+
+    uint8_t mixKnobChannel = KNOB_1_CHN;
+    uint8_t rateKnobChannel = KNOB_2_CHN;
+    uint8_t widthKnobChannel = KNOB_3_CHN;
+    int waveformTogglePin1 = effectSPDT1Pin1;
+    int waveformTogglePin2 = effectSPDT1Pin2;
 
     Knob mixKnob;
     Knob rateKnob;

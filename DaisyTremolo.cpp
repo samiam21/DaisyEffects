@@ -6,13 +6,16 @@ void DaisyTremolo::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay,
     display = daisyDisplay;
 
     // Initialize the knobs
-    mixKnob.Init(hw, KNOB_1_CHN, mixLevel);
-    rateKnob.Init(hw, KNOB_2_CHN, rate, rateMin, rateMax);
-    widthKnob.Init(hw, KNOB_3_CHN, width);
+    mixKnob.Init(hw, mixKnobChannel, mixLevel);
+    rateKnob.Init(hw, rateKnobChannel, rate, rateMin, rateMax);
+    widthKnob.Init(hw, widthKnobChannel, width);
 
     // Initialize the toggle
-    waveformSelector.Init(hw->GetPin(effectSPDT1Pin1), hw->GetPin(effectSPDT1Pin2));
-    UpdateToggleDisplay();
+    if (waveformTogglePin1 != -1 && waveformTogglePin2 != -1)
+    {
+        waveformSelector.Init(hw->GetPin(waveformTogglePin1), hw->GetPin(waveformTogglePin2));
+        UpdateToggleDisplay();
+    }
 
     // Initialize the Tremolo
     float sample_rate = hw->AudioSampleRate();
@@ -40,20 +43,33 @@ void DaisyTremolo::Cleanup()
 {
 }
 
+void DaisyTremolo::ConfigureKnobPositions(int mixChannel, int rateChannel, int widthChannel)
+{
+    mixKnobChannel = mixChannel;
+    rateKnobChannel = rateChannel;
+    widthKnobChannel = widthChannel;
+}
+
+void DaisyTremolo::ConfigureTogglePositions(int waveformToggle1, int waveformToggle2)
+{
+    waveformTogglePin1 = waveformToggle1;
+    waveformTogglePin2 = waveformToggle2;
+}
+
 void DaisyTremolo::Loop(bool allowEffectControl)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)
     {
         // Knob 1 controls the mix level
-        if (mixKnob.SetNewValue(mixLevel))
+        if (mixKnobChannel != KNOB_NO_CHN && mixKnob.SetNewValue(mixLevel))
         {
             debugPrintlnF(hw, "Updated the mix level to: %f", mixLevel);
             updateEditModeKnobValue(display, 0, mixLevel);
         }
 
         // Knob 2 controls the LFO rate
-        if (rateKnob.SetNewValue(rate))
+        if (rateKnobChannel != KNOB_NO_CHN && rateKnob.SetNewValue(rate))
         {
             tremolo.SetFreq(rate);
 
@@ -62,7 +78,7 @@ void DaisyTremolo::Loop(bool allowEffectControl)
         }
 
         // Knob 3 controls the LFO width
-        if (widthKnob.SetNewValue(width))
+        if (widthKnobChannel != KNOB_NO_CHN && widthKnob.SetNewValue(width))
         {
             tremolo.SetDepth(width);
 
@@ -71,34 +87,37 @@ void DaisyTremolo::Loop(bool allowEffectControl)
         }
 
         // Read the toggle to set the tremolo waveform
-        if (waveformSelector.ReadToggle() == 0)
+        if (waveformTogglePin1 != -1 && waveformTogglePin2 != -1)
         {
-            if (waveform != Oscillator::WAVE_SIN)
+            if (waveformSelector.ReadToggle() == 0)
             {
-                waveform = Oscillator::WAVE_SIN;
-                tremolo.SetWaveform(waveform);
-                debugPrintln(hw, "Setting waveform to WAVE_SIN");
-                UpdateToggleDisplay();
+                if (waveform != Oscillator::WAVE_SIN)
+                {
+                    waveform = Oscillator::WAVE_SIN;
+                    tremolo.SetWaveform(waveform);
+                    debugPrintln(hw, "Setting waveform to WAVE_SIN");
+                    UpdateToggleDisplay();
+                }
             }
-        }
-        else if (waveformSelector.ReadToggle() == 1)
-        {
-            if (waveform != Oscillator::WAVE_SQUARE)
+            else if (waveformSelector.ReadToggle() == 1)
             {
-                waveform = Oscillator::WAVE_SQUARE;
-                tremolo.SetWaveform(waveform);
-                debugPrintln(hw, "Setting waveform to WAVE_SQUARE");
-                UpdateToggleDisplay();
+                if (waveform != Oscillator::WAVE_SQUARE)
+                {
+                    waveform = Oscillator::WAVE_SQUARE;
+                    tremolo.SetWaveform(waveform);
+                    debugPrintln(hw, "Setting waveform to WAVE_SQUARE");
+                    UpdateToggleDisplay();
+                }
             }
-        }
-        else
-        {
-            if (waveform != Oscillator::WAVE_RAMP)
+            else
             {
-                waveform = Oscillator::WAVE_RAMP;
-                tremolo.SetWaveform(waveform);
-                debugPrintln(hw, "Setting waveform to WAVE_RAMP");
-                UpdateToggleDisplay();
+                if (waveform != Oscillator::WAVE_RAMP)
+                {
+                    waveform = Oscillator::WAVE_RAMP;
+                    tremolo.SetWaveform(waveform);
+                    debugPrintln(hw, "Setting waveform to WAVE_RAMP");
+                    UpdateToggleDisplay();
+                }
             }
         }
     }
