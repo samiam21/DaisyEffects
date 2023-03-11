@@ -45,9 +45,9 @@ private:
     const float maxRate = 1000.f;
 
     float mixLevel = 1.f;
-    float rate = 0.5f;
+    float rate = 500.f;
     float width = 0.5f;
-    float feedback = 0.88f;
+    float feedback = 0.5f;
 
     uint8_t mixKnobChannel = KNOB_1_CHN;
     uint8_t rateKnobChannel = KNOB_2_CHN;

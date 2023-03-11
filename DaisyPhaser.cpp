@@ -14,7 +14,7 @@ void DaisyPhaser::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, 
     // Initialize the Flanger
     float sample_rate = hw->AudioSampleRate();
     phaser.Init(sample_rate);
-    phaser.SetLfoFreq(rate);
+    phaser.SetFreq(rate);
     phaser.SetLfoDepth(width);
     phaser.SetFeedback(feedback);
 }
@@ -60,7 +60,7 @@ void DaisyPhaser::Loop(bool allowEffectControl)
         // Knob 2 controls the LFO rate
         if (rateKnobChannel != KNOB_NO_CHN && rateKnob.SetNewValue(rate))
         {
-            phaser.SetLfoFreq(rate);
+            phaser.SetFreq(rate);
 
             debugPrintlnF(hw, "Updated the rate to: %f", rate);
             updateEditModeKnobValue(display, 1, rate);
