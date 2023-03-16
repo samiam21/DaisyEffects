@@ -42,9 +42,9 @@ private:
     const char *knobNames[MAX_KNOBS] = {(char *)"MIX", (char *)"RATE", (char *)"WIDTH", (char *)"DELAY"};
 
     float mixLevel = 0.5f;
-    float rate = 0.5f;
-    float width = 0.5f;
-    float delay = 1.f;
+    float rate = 0.33f;
+    float width = 1.f;
+    float delay = 0.9f;
 
     uint8_t mixKnobChannel = KNOB_1_CHN;
     uint8_t rateKnobChannel = KNOB_2_CHN;
