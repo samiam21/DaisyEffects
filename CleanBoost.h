@@ -42,8 +42,8 @@ public:
 private:
     const char *knobNames[MAX_KNOBS] = {(char *)"BOOST", (char *)"", (char *)"", (char *)""};
 
-    const float boostLevelMin = 1.0f;
-    const float boostLevelMax = 30.0f;
+    const float boostLevelMin = 30.0f;
+    const float boostLevelMax = 1.0f;
     float boostLevel = 10.0f;
     bool audioOn = true;
 
