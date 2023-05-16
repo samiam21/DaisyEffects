@@ -40,18 +40,25 @@ public:
     EffectSettings GetEffectSettings();
     void SetEffectSettings(EffectSettings effectSettings);
     void ConfigureKnobPositions(int mixChannel, int decayChannel, int toneChannel);
+    void SetMinMaxMix(float minMix, float maxMix);
+    void SetMinMaxDecay(float minDecay, float maxDecay);
+    void ShouldReverseTonePot(bool reverseTone);
 
 private:
     const char *knobNames[MAX_KNOBS] = {(char *)"MIX", (char *)"DECAY", (char *)"TONE", (char *)""};
 
-    const float decayMin = 0.89f;
-    const float decayMax = 0.99f;
-    const float toneMin = 0.0f;
+    float decayMin = 0.89f;
+    float decayMax = 0.99f;
+    float mixMin = 0.0f;
+    float mixMax = 1.f;
+    float toneMin = 0.0f;
 
     float sample_rate;
     float decay = 1.0f;
     float tone = 5000.f;
     float mixLevel = 0.5f;
+
+    bool reverseTonePot = false;
 
     uint8_t mixKnobChannel = KNOB_1_CHN;
     uint8_t decayKnobChannel = KNOB_2_CHN;

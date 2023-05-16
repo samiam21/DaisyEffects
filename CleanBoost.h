@@ -38,12 +38,13 @@ public:
     void SetEffectSettings(EffectSettings effectSettings);
     void ConfigureKnobPositions(int boostChannel);
     void ConfigureTogglePositions(int onOffPin);
+    void SetBoostMinMax(float boostMin, float boostMax);
 
 private:
     const char *knobNames[MAX_KNOBS] = {(char *)"BOOST", (char *)"", (char *)"", (char *)""};
 
-    const float boostLevelMin = 30.0f;
-    const float boostLevelMax = 1.0f;
+    float boostLevelMin = 1.0f;
+    float boostLevelMax = 30.0f;
     float boostLevel = 10.0f;
     bool audioOn = true;
 

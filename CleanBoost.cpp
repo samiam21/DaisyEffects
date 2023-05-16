@@ -31,6 +31,12 @@ void CleanBoost::ConfigureTogglePositions(int onOffPin)
     onOffTogglePin = onOffPin;
 }
 
+void CleanBoost::SetBoostMinMax(float boostMin, float boostMax)
+{
+    boostLevelMin = boostMin;
+    boostLevelMax = boostMax;
+}
+
 void CleanBoost::Loop(bool allowEffectControl)
 {
     // Only adjust if we are in edit mode

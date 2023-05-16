@@ -9,9 +9,16 @@ void Reverb::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int *
     sample_rate = hw->AudioSampleRate();
 
     // Initialize the knobs
-    mixKnob.Init(hw, mixKnobChannel, mixLevel);
+    mixKnob.Init(hw, mixKnobChannel, mixLevel, mixMin, mixMax);
     decayKnob.Init(hw, decayKnobChannel, decay, decayMin, decayMax);
-    toneKnob.Init(hw, toneKnobChannel, tone, toneMin, sample_rate / 2.0f);
+    if (reverseTonePot)
+    {
+        toneKnob.Init(hw, toneKnobChannel, tone, sample_rate / 2.0f, toneMin);
+    }
+    else
+    {
+        toneKnob.Init(hw, toneKnobChannel, tone, toneMin, sample_rate / 2.0f);
+    }
 
     // Initialize the reverb (check sample rate)
     int ret = -1;
@@ -43,6 +50,23 @@ void Reverb::ConfigureKnobPositions(int mixChannel, int decayChannel, int toneCh
     mixKnobChannel = mixChannel;
     decayKnobChannel = decayChannel;
     toneKnobChannel = toneChannel;
+}
+
+void Reverb::SetMinMaxMix(float minMix, float maxMix)
+{
+    mixMin = minMix;
+    mixMax = maxMix;
+}
+
+void Reverb::SetMinMaxDecay(float minDecay, float maxDecay)
+{
+    decayMin = minDecay;
+    decayMax = maxDecay;
+}
+
+void Reverb::ShouldReverseTonePot(bool reverseTone)
+{
+    reverseTonePot = reverseTone;
 }
 
 void Reverb::Loop(bool allowEffectControl)
