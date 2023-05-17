@@ -6,10 +6,10 @@ void Shifter::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int 
     display = daisyDisplay;
 
     // Initialize the knobs
-    mixKnob.Init(hw, KNOB_1_CHN, mix);
-    transKnob.Init(hw, KNOB_2_CHN, transpose, transMin, transMax);
-    delayKnob.Init(hw, KNOB_3_CHN, delay, delayMin, delayMax);
-    funKnob.Init(hw, KNOB_4_CHN, fun, funMin, funMax);
+    mixKnob.Init(hw, mixKnobChannel, mix);
+    transKnob.Init(hw, transKnobChannel, transpose, transMin, transMax);
+    delayKnob.Init(hw, delayKnobChannel, delay, delayMin, delayMax);
+    funKnob.Init(hw, funKnobChannel, fun, funMin, funMax);
 
     // Initialize the shifter
     shifter.Init(hw->AudioSampleRate());
@@ -36,20 +36,28 @@ void Shifter::Cleanup()
 {
 }
 
+void Shifter::ConfigureKnobPositions(int mixChannel, int transposeChannel, int delayChannel, int funChannel)
+{
+    mixKnobChannel = mixChannel;
+    transKnobChannel = transposeChannel;
+    delayKnobChannel = delayChannel;
+    funKnobChannel = funChannel;
+}
+
 void Shifter::Loop(bool allowEffectControl)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)
     {
         // Knob 1 controls the mix
-        if (mixKnob.SetNewValue(mix))
+        if (mixKnobChannel != KNOB_NO_CHN && mixKnob.SetNewValue(mix))
         {
             debugPrintlnF(hw, "Updated the mix to: %f", mix);
             updateEditModeKnobValue(display, 0, mix);
         }
 
         // Knob 2 controls the transpose
-        if (transKnob.SetNewValue(transpose))
+        if (transKnobChannel != KNOB_NO_CHN && transKnob.SetNewValue(transpose))
         {
             // Round the transpose to the nearest 0.5
             float trans = floor((transpose * 2) + 0.5) / 2;
@@ -60,7 +68,7 @@ void Shifter::Loop(bool allowEffectControl)
         }
 
         // Knob 3 controls the delay
-        if (delayKnob.SetNewValue(delay))
+        if (delayKnobChannel != KNOB_NO_CHN && delayKnob.SetNewValue(delay))
         {
             // Convert the delay to an int and update the shifter
             uint32_t del = (uint32_t)delay;
@@ -70,8 +78,8 @@ void Shifter::Loop(bool allowEffectControl)
             updateEditModeKnobValueI(display, 2, del);
         }
 
-        // Knob 4 controls the release
-        if (funKnob.SetNewValue(fun))
+        // Knob 4 controls the fun
+        if (funKnobChannel != KNOB_NO_CHN && funKnob.SetNewValue(fun))
         {
             shifter.SetFun(fun);
 
