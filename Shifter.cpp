@@ -6,7 +6,7 @@ void Shifter::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, int 
     display = daisyDisplay;
 
     // Initialize the knobs
-    mixKnob.Init(hw, mixKnobChannel, mix);
+    mixKnob.Init(hw, mixKnobChannel, mix, mixMin, mixMax);
     transKnob.Init(hw, transKnobChannel, transpose, transMin, transMax);
     delayKnob.Init(hw, delayKnobChannel, delay, delayMin, delayMax);
     funKnob.Init(hw, funKnobChannel, fun, funMin, funMax);
@@ -42,6 +42,12 @@ void Shifter::ConfigureKnobPositions(int mixChannel, int transposeChannel, int d
     transKnobChannel = transposeChannel;
     delayKnobChannel = delayChannel;
     funKnobChannel = funChannel;
+}
+
+void Shifter::SetMinMaxMix(float minMix, float maxMix)
+{
+    mixMin = minMix;
+    mixMax = maxMix;
 }
 
 void Shifter::Loop(bool allowEffectControl)

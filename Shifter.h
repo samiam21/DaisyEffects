@@ -38,6 +38,7 @@ public:
     EffectSettings GetEffectSettings();
     void SetEffectSettings(EffectSettings effectSettings);
     void ConfigureKnobPositions(int mixChannel, int transposeChannel, int delayChannel, int funChannel);
+    void SetMinMaxMix(float minMix, float maxMix);
 
 private:
     const char *knobNames[MAX_KNOBS] = {(char *)"MIX", (char *)"TRANS", (char *)"DEL", (char *)"FUN"};
@@ -45,6 +46,8 @@ private:
     uint32_t GetDelay();
     float GetTranspose();
 
+    float mixMin = 0.0f;
+    float mixMax = 1.f;
     const float transMin = -12.0f;
     const float transMax = 24.0f;
     const float delayMin = 5760.f;
