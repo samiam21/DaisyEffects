@@ -37,6 +37,10 @@ float Reverb::Process(float in)
 {
     float out1;
     float out2;
+
+    // Update the decay, based on the lengthen property
+    verb.SetFeedback((decay + decay_lengthen) > 0.99f ? 0.99f : (decay + decay_lengthen));
+
     verb.Process(in, in, &out1, &out2);
     return out1 * mixLevel + in * (1 - mixLevel);
 }
@@ -67,6 +71,12 @@ void Reverb::SetMinMaxDecay(float minDecay, float maxDecay)
 void Reverb::ShouldReverseTonePot(bool reverseTone)
 {
     reverseTonePot = reverseTone;
+}
+
+void Reverb::LengthenTail(bool lengthen)
+{
+    lengthenTail = lengthen;
+    decay_lengthen = lengthen ? lengthen_amount : 0;
 }
 
 void Reverb::Loop(bool allowEffectControl)

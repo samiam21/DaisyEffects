@@ -43,9 +43,12 @@ public:
     void SetMinMaxMix(float minMix, float maxMix);
     void SetMinMaxDecay(float minDecay, float maxDecay);
     void ShouldReverseTonePot(bool reverseTone);
+    void LengthenTail(bool lengthen);
 
 private:
     const char *knobNames[MAX_KNOBS] = {(char *)"MIX", (char *)"DECAY", (char *)"TONE", (char *)""};
+
+    const float lengthen_amount = 0.1f;
 
     float decayMin = 0.79f;
     float decayMax = 0.99f;
@@ -55,10 +58,12 @@ private:
 
     float sample_rate;
     float decay = 1.0f;
+    float decay_lengthen = 0.0f;
     float tone = 5000.f;
     float mixLevel = 0.5f;
 
     bool reverseTonePot = false;
+    bool lengthenTail = false;
 
     uint8_t mixKnobChannel = KNOB_1_CHN;
     uint8_t decayKnobChannel = KNOB_2_CHN;
