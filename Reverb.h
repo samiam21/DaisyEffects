@@ -47,7 +47,7 @@ public:
 private:
     const char *knobNames[MAX_KNOBS] = {(char *)"MIX", (char *)"DECAY", (char *)"TONE", (char *)""};
 
-    float decayMin = 0.89f;
+    float decayMin = 0.79f;
     float decayMax = 0.99f;
     float mixMin = 0.0f;
     float mixMax = 1.f;
