@@ -6,10 +6,10 @@ void DaisyCompressor::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDispl
     display = daisyDisplay;
 
     // Initialize the knobs
-    ratioKnob.Init(hw, KNOB_1_CHN, ratio, ratioMin, ratioMax);
-    thresholdKnob.Init(hw, KNOB_2_CHN, threshold, thresholdMin, thresholdMax);
-    attackKnob.Init(hw, KNOB_3_CHN, attack, attackMin, attackMax);
-    releaseKnob.Init(hw, KNOB_4_CHN, release, releaseMin, releaseMax);
+    ratioKnob.Init(hw, ratioKnobChannel, ratio, ratioMin, ratioMax);
+    thresholdKnob.Init(hw, thresholdKnobChannel, threshold, thresholdMin, thresholdMax);
+    attackKnob.Init(hw, attackKnobChannel, attack, attackMin, attackMax);
+    releaseKnob.Init(hw, releaseKnobChannel, release, releaseMin, releaseMax);
 
     // Initialize the compressor
     compressor.Init(hw->AudioSampleRate());
@@ -25,13 +25,21 @@ void DaisyCompressor::Cleanup()
 {
 }
 
+void DaisyCompressor::ConfigureKnobPositions(int ratioChannel, int thresholdChannel, int attackChannel, int releaseChannel)
+{
+    ratioKnobChannel = ratioChannel;
+    thresholdKnobChannel = thresholdChannel;
+    attackKnobChannel = attackChannel;
+    releaseKnobChannel = releaseChannel;
+}
+
 void DaisyCompressor::Loop(bool allowEffectControl)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)
     {
         // Knob 1 controls the ratio
-        if (ratioKnob.SetNewValue(ratio))
+        if (ratioKnobChannel != KNOB_NO_CHN && ratioKnob.SetNewValue(ratio))
         {
             compressor.SetRatio(ratio);
             debugPrintlnF(hw, "Updated the ratio to: %f", ratio);
@@ -39,7 +47,7 @@ void DaisyCompressor::Loop(bool allowEffectControl)
         }
 
         // Knob 2 controls the threshold
-        if (thresholdKnob.SetNewValue(threshold))
+        if (thresholdKnobChannel != KNOB_NO_CHN && thresholdKnob.SetNewValue(threshold))
         {
             compressor.SetThreshold(threshold);
             debugPrintlnF(hw, "Updated the threshold to: %f", threshold);
@@ -47,7 +55,7 @@ void DaisyCompressor::Loop(bool allowEffectControl)
         }
 
         // Knob 3 controls the attack
-        if (attackKnob.SetNewValue(attack))
+        if (attackKnobChannel != KNOB_NO_CHN && attackKnob.SetNewValue(attack))
         {
             compressor.SetAttack(attack);
             debugPrintlnF(hw, "Updated the attack to: %f", attack);
@@ -55,7 +63,7 @@ void DaisyCompressor::Loop(bool allowEffectControl)
         }
 
         // Knob 4 controls the release
-        if (releaseKnob.SetNewValue(release))
+        if (releaseKnobChannel != KNOB_NO_CHN && releaseKnob.SetNewValue(release))
         {
             compressor.SetRelease(release);
             debugPrintlnF(hw, "Updated the release to: %f", release);
