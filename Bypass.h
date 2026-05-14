@@ -41,8 +41,8 @@ public:
 private:
     const char *knobNames[MAX_KNOBS] = {(char *)"VOL", (char *)"", (char *)"", (char *)""};
 
-    const float volLevelMin = 30.0f;
-    const float volLevelMax = 1.0f;
+    const float volLevelMin = 10.0f;
+    const float volLevelMax = 0.5f;
     float volLevel = 10.0f;
 
     int volKnobChannel = KNOB_1_CHN;
