@@ -35,15 +35,15 @@ enum TimeSignature
 class Metronome : public IEffect
 {
 public:
-    void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay = nullptr, int *newBpm = nullptr);
-    void Cleanup();
-    float Process(float in);
-    void Loop(bool allowEffectControl);
-    char *GetEffectName();
-    char **GetKnobNames();
-    EffectSettings GetEffectSettings();
-    void SetEffectSettings(EffectSettings effectSettings);
-    void UpdateToggleDisplay();
+    void Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay = nullptr, int *newBpm = nullptr) override;
+    void Cleanup() override;
+    float Process(float in) override;
+    void Loop(bool allowEffectControl, bool isTapPressed = false) override;
+    char *GetEffectName() override;
+    char **GetKnobNames() override;
+    EffectSettings GetEffectSettings() override;
+    void SetEffectSettings(EffectSettings effectSettings) override;
+    void UpdateToggleDisplay() override;
 
 private:
     const char *knobNames[MAX_KNOBS] = {(char *)"VOLUME", (char *)"TEMPO", (char *)"", (char *)""};

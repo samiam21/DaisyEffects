@@ -44,7 +44,7 @@ void DaisyResonator::Cleanup()
 {
 }
 
-void DaisyResonator::Loop(bool allowEffectControl)
+void DaisyResonator::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)

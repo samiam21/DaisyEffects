@@ -79,7 +79,7 @@ void Reverb::LengthenTail(bool lengthen)
     decay_lengthen = lengthen ? lengthen_amount : 0;
 }
 
-void Reverb::Loop(bool allowEffectControl)
+void Reverb::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)

@@ -50,7 +50,7 @@ void Shifter::SetMinMaxMix(float minMix, float maxMix)
     mixMax = maxMix;
 }
 
-void Shifter::Loop(bool allowEffectControl)
+void Shifter::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)

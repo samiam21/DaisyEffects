@@ -35,7 +35,7 @@ void Crush::Cleanup()
 {
 }
 
-void Crush::Loop(bool allowEffectControl)
+void Crush::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)

@@ -49,7 +49,7 @@ void Distortion::Cleanup()
 {
 }
 
-void Distortion::Loop(bool allowEffectControl)
+void Distortion::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)

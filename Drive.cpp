@@ -42,7 +42,7 @@ void Drive::Cleanup()
 {
 }
 
-void Drive::Loop(bool allowEffectControl)
+void Drive::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)

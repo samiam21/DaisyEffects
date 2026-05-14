@@ -36,7 +36,7 @@ void AutoWah::Cleanup()
 {
 }
 
-void AutoWah::Loop(bool allowEffectControl)
+void AutoWah::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)

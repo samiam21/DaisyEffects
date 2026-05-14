@@ -33,7 +33,7 @@ void DaisyCompressor::ConfigureKnobPositions(int ratioChannel, int thresholdChan
     releaseKnobChannel = releaseChannel;
 }
 
-void DaisyCompressor::Loop(bool allowEffectControl)
+void DaisyCompressor::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)

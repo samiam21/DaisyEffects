@@ -62,7 +62,7 @@ void Metronome::Cleanup()
 {
 }
 
-void Metronome::Loop(bool allowEffectControl)
+void Metronome::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)

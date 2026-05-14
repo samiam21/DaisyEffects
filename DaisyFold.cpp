@@ -26,7 +26,7 @@ void DaisyFold::Cleanup()
 {
 }
 
-void DaisyFold::Loop(bool allowEffectControl)
+void DaisyFold::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)

@@ -45,7 +45,7 @@ void DaisyChorus::ConfigureKnobPositions(int mixChannel, int rateChannel, int wi
     delayKnobChannel = delayChannel;
 }
 
-void DaisyChorus::Loop(bool allowEffectControl)
+void DaisyChorus::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)

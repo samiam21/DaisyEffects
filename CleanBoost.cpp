@@ -37,7 +37,7 @@ void CleanBoost::SetBoostMinMax(float boostMin, float boostMax)
     boostLevelMax = boostMax;
 }
 
-void CleanBoost::Loop(bool allowEffectControl)
+void CleanBoost::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)

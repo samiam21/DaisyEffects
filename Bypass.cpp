@@ -22,7 +22,7 @@ void Bypass::ConfigureKnobPositions(int volChannel)
     volKnobChannel = volChannel;
 }
 
-void Bypass::Loop(bool allowEffectControl)
+void Bypass::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)

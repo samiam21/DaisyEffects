@@ -56,7 +56,7 @@ void DaisyTremolo::ConfigureTogglePositions(int waveformToggle1, int waveformTog
     waveformTogglePin2 = waveformToggle2;
 }
 
-void DaisyTremolo::Loop(bool allowEffectControl)
+void DaisyTremolo::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)

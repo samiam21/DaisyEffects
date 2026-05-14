@@ -49,7 +49,7 @@ void Echo::Cleanup()
     del_line.Reset();
 }
 
-void Echo::Loop(bool allowEffectControl)
+void Echo::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)

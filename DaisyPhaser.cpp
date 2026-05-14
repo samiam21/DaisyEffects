@@ -45,7 +45,7 @@ void DaisyPhaser::ConfigureKnobPositions(int mixChannel, int rateChannel, int wi
     feedbackKnobChannel = feedbackChannel;
 }
 
-void DaisyPhaser::Loop(bool allowEffectControl)
+void DaisyPhaser::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
     if (allowEffectControl)

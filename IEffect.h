@@ -28,8 +28,6 @@ public:
     virtual EffectSettings GetEffectSettings() { return effectSettings; }
     virtual void SetEffectSettings(EffectSettings effectSettings) {}
     virtual void UpdateToggleDisplay() {}
-    virtual void ConfigureKnobPositions(...) {}
-    virtual void ConfigureTogglePositions(...) {}
 
 protected:
     daisy::DaisySeed *hw;
