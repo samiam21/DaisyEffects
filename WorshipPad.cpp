@@ -42,19 +42,13 @@ void WorshipPad::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, i
     octaveToggle_.Init(hw->GetPin(effectSPDT1Pin1), hw->GetPin(effectSPDT1Pin2));
     currentOctave_ = octaveToggle_.ReadToggle();
 
-    guitarKnob_.Init(hw, KNOB_1_CHN, guitarLevel_, 0.0f, 1.0f);
     padKnob_.Init(hw, KNOB_2_CHN, padLevel_, 0.0f, 1.0f);
-    keyKnob_.Init(hw, KNOB_3_CHN, keyPosition_, 0.0f, 1.0f);
 
     UpdateFrequencies();
 }
 
 void WorshipPad::UpdateFrequencies()
 {
-    int noteIndex = static_cast<int>(keyPosition_ * 12.0f);
-    if (noteIndex > 11)
-        noteIndex = 11;
-
     // Octave multipliers relative to kNoteFreqsC3 base: 0 = C3, 1 = C4, 2 = C5
     float octMul = 1.0f;
     if (currentOctave_ == 1)
@@ -62,7 +56,7 @@ void WorshipPad::UpdateFrequencies()
     else if (currentOctave_ == 2)
         octMul = 4.0f;
 
-    float rootFreq = kNoteFreqsC3[noteIndex] * octMul;
+    float rootFreq = kNoteFreqsC3[rootNoteIndex_] * octMul;
 
     oscRoot_.SetFreq(rootFreq);
     oscFifth_.SetFreq(rootFreq * 1.49831f); // perfect fifth (2^(7/12))
@@ -70,13 +64,15 @@ void WorshipPad::UpdateFrequencies()
 
 float WorshipPad::Process(float in)
 {
+    (void)in; // Pad-only effect — audio input is intentionally ignored.
+
     float padMono = oscRoot_.Process() + oscFifth_.Process();
 
     float out1, out2;
     wpad_verb.Process(padMono, padMono, &out1, &out2);
     float wetPad = (out1 + out2) * 0.5f;
 
-    return (in * guitarLevel_) + (wetPad * padLevel_);
+    return wetPad * padLevel_;
 }
 
 void WorshipPad::Loop(bool allowEffectControl, bool isTapPressed)
@@ -94,26 +90,11 @@ void WorshipPad::Loop(bool allowEffectControl, bool isTapPressed)
 
     if (allowEffectControl)
     {
-        if (guitarKnob_.SetNewValue(guitarLevel_))
-        {
-            debugPrintlnF(hw, "WorshipPad guitar level: %f", guitarLevel_);
-            updateEditModeKnobValue(display, 0, guitarLevel_);
-            effectSettings.knobSettings[0] = guitarLevel_;
-        }
-
         if (padKnob_.SetNewValue(padLevel_))
         {
             debugPrintlnF(hw, "WorshipPad pad level: %f", padLevel_);
             updateEditModeKnobValue(display, 1, padLevel_);
             effectSettings.knobSettings[1] = padLevel_;
-        }
-
-        if (keyKnob_.SetNewValue(keyPosition_))
-        {
-            debugPrintlnF(hw, "WorshipPad key position: %f", keyPosition_);
-            updateEditModeKnobValue(display, 2, keyPosition_);
-            effectSettings.knobSettings[2] = keyPosition_;
-            freqChanged                     = true;
         }
     }
 
@@ -133,18 +114,14 @@ char **WorshipPad::GetKnobNames()
 
 EffectSettings WorshipPad::GetEffectSettings()
 {
-    effectSettings.knobSettings[0] = guitarLevel_;
     effectSettings.knobSettings[1] = padLevel_;
-    effectSettings.knobSettings[2] = keyPosition_;
     effectSettings.togglePosition  = currentOctave_;
     return effectSettings;
 }
 
 void WorshipPad::SetEffectSettings(EffectSettings settings)
 {
-    guitarLevel_   = settings.knobSettings[0];
     padLevel_      = settings.knobSettings[1];
-    keyPosition_   = settings.knobSettings[2];
     currentOctave_ = settings.togglePosition;
     UpdateFrequencies();
 }
