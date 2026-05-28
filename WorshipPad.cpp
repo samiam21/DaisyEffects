@@ -50,7 +50,7 @@ void WorshipPad::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, i
     UpdateFrequencies();
 
     if (display)
-        display->WriteMessage((char *)kNoteNames[rootNoteIndex]);
+        display->WriteMessageScaled(kNoteNames[rootNoteIndex], FONT_SIZE, 8);
 }
 
 void WorshipPad::UpdateFrequencies()
@@ -78,7 +78,7 @@ void WorshipPad::NextRootNote()
     rootNoteIndex = (rootNoteIndex + 1) % 12;
     UpdateFrequencies();
     if (display)
-        display->WriteMessage((char *)kNoteNames[rootNoteIndex]);
+        display->WriteMessageScaled(kNoteNames[rootNoteIndex], FONT_SIZE, 8);
 }
 
 void WorshipPad::PrevRootNote()
@@ -86,7 +86,7 @@ void WorshipPad::PrevRootNote()
     rootNoteIndex = (rootNoteIndex + 11) % 12;
     UpdateFrequencies();
     if (display)
-        display->WriteMessage((char *)kNoteNames[rootNoteIndex]);
+        display->WriteMessageScaled(kNoteNames[rootNoteIndex], FONT_SIZE, 8);
 }
 
 float WorshipPad::Process(float in)

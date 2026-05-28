@@ -11,7 +11,6 @@ using MyOledDisplay = OledDisplay<SSD130x4WireSpi128x64Driver>;
 
 #define MAX_MESSAGE_LEN 255
 #define FONT_SIZE Font_6x8
-#define FONT_SIZE_LARGE Font_11x18
 #define LINE_HEIGHT 9
 #define CHAR_WIDTH 7
 #define SSD1309_WIDTH 128
@@ -72,6 +71,13 @@ public:
      * Clears the OLED screen
      */
     void ClearScreen();
+
+    /**
+     * Clears the screen and renders message centered on screen, scaling each
+     * pixel to a scale x scale block. Trailing empty rows in the font are
+     * excluded from the height calculation so the text is visually centered.
+     */
+    void WriteMessageScaled(const char *message, const FontDef &font, int scale);
 
 private:
     DaisySeed *hw;

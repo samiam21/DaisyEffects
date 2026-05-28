@@ -240,6 +240,70 @@ void DaisyDisplay::WriteMessage(char *message, ...)
 }
 
 /**
+ * Clears the screen and renders message centered, with each pixel scaled to
+ * a scale×scale filled block. Trailing all-zero rows in the font bitmap are
+ * excluded from the height so the text is visually centered on screen.
+ */
+void DaisyDisplay::WriteMessageScaled(const char *message, const FontDef &font, int scale)
+{
+    // Measure string length
+    int len = 0;
+    while (message[len]) len++;
+
+    // Auto-detect effective row count: find the last non-zero row across all
+    // characters so trailing descender/padding rows don't affect centering.
+    int effectiveRows = 0;
+    for (int ci = 0; ci < len; ci++)
+    {
+        unsigned char c = (unsigned char)message[ci];
+        if (c < 32 || c > 126) continue;
+        const uint16_t *charData = font.data + (c - 32) * font.FontHeight;
+        for (int row = font.FontHeight - 1; row >= 0; row--)
+        {
+            if (charData[row] != 0)
+            {
+                if (row + 1 > effectiveRows)
+                    effectiveRows = row + 1;
+                break;
+            }
+        }
+    }
+    if (effectiveRows == 0)
+        effectiveRows = font.FontHeight;
+
+    int charW  = font.FontWidth * scale;
+    int charH  = effectiveRows  * scale;
+    int startX = (SSD1309_WIDTH  - len * charW) / 2;
+    int startY = (SSD1309_HEIGHT - charH)        / 2;
+
+    display.Fill(false);
+
+    for (int ci = 0; ci < len; ci++)
+    {
+        unsigned char c = (unsigned char)message[ci];
+        if (c < 32 || c > 126) continue;
+        const uint16_t *charData = font.data + (c - 32) * font.FontHeight;
+        int cStartX = startX + ci * charW;
+
+        for (int row = 0; row < effectiveRows; row++)
+        {
+            uint16_t rowData = charData[row];
+            for (int col = 0; col < font.FontWidth; col++)
+            {
+                if (rowData & (0x8000u >> col))
+                {
+                    int px = cStartX + col * scale;
+                    int py = startY  + row * scale;
+                    display.DrawRect(px, py, px + scale - 1, py + scale - 1, true, true);
+                }
+            }
+        }
+    }
+
+    display.Update();
+}
+
+/**
  * Clears the OLED screen
  */
 void DaisyDisplay::ClearScreen()
