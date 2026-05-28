@@ -58,7 +58,7 @@ private:
     float       padLevel   = 1.0f;
 
     int currentOctave = 1; // 0 = C3, 1 = C4, 2 = C5
-    int rootNoteIndex = 0; // 0 = C; future buttons will change this
+    int rootNoteIndex = 0; // 0 = C
 
     // C3 root frequencies for all 12 chromatic notes (A4 = 440 Hz tuning)
     static const float kNoteFreqsC3[12];
