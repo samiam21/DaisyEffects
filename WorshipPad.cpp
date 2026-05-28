@@ -26,23 +26,23 @@ void WorshipPad::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, i
 
     float sr = hw->AudioSampleRate();
 
-    oscRoot_.Init(sr);
-    oscRoot_.SetWaveform(Oscillator::WAVE_SIN);
-    oscRoot_.SetAmp(0.5f);
+    oscRoot.Init(sr);
+    oscRoot.SetWaveform(Oscillator::WAVE_SIN);
+    oscRoot.SetAmp(0.3f);
 
-    oscFifth_.Init(sr);
-    oscFifth_.SetWaveform(Oscillator::WAVE_SIN);
-    oscFifth_.SetAmp(0.5f);
+    oscFifth.Init(sr);
+    oscFifth.SetWaveform(Oscillator::WAVE_SIN);
+    oscFifth.SetAmp(0.3f);
 
     // ReverbSc runs poorly above 48 kHz — halve the rate when at 96 kHz.
     wpad_verb.Init(sr > 48000.f ? sr / 2.0f : sr);
     wpad_verb.SetFeedback(0.90f);
     wpad_verb.SetLpFreq(6000.0f);
 
-    octaveToggle_.Init(hw->GetPin(effectSPDT1Pin1), hw->GetPin(effectSPDT1Pin2));
-    currentOctave_ = octaveToggle_.ReadToggle();
+    octaveToggle.Init(hw->GetPin(effectSPDT1Pin1), hw->GetPin(effectSPDT1Pin2));
+    currentOctave = octaveToggle.ReadToggle();
 
-    padKnob_.Init(hw, KNOB_2_CHN, padLevel_, 0.0f, 1.0f);
+    padKnob.Init(hw, padKnobChannel, padLevel, padLevelMin, padLevelMax);
 
     UpdateFrequencies();
 }
@@ -51,28 +51,33 @@ void WorshipPad::UpdateFrequencies()
 {
     // Octave multipliers relative to kNoteFreqsC3 base: 0 = C3, 1 = C4, 2 = C5
     float octMul = 1.0f;
-    if (currentOctave_ == 1)
+    if (currentOctave == 1)
         octMul = 2.0f;
-    else if (currentOctave_ == 2)
+    else if (currentOctave == 2)
         octMul = 4.0f;
 
-    float rootFreq = kNoteFreqsC3[rootNoteIndex_] * octMul;
+    float rootFreq = kNoteFreqsC3[rootNoteIndex] * octMul;
 
-    oscRoot_.SetFreq(rootFreq);
-    oscFifth_.SetFreq(rootFreq * 1.49831f); // perfect fifth (2^(7/12))
+    oscRoot.SetFreq(rootFreq);
+    oscFifth.SetFreq(rootFreq * 1.49831f); // perfect fifth (2^(7/12))
+}
+
+void WorshipPad::ConfigureKnobPositions(int padChannel)
+{
+    padKnobChannel = padChannel;
 }
 
 float WorshipPad::Process(float in)
 {
     (void)in; // Pad-only effect — audio input is intentionally ignored.
 
-    float padMono = oscRoot_.Process() + oscFifth_.Process();
+    float padMono = oscRoot.Process() + oscFifth.Process();
 
     float out1, out2;
     wpad_verb.Process(padMono, padMono, &out1, &out2);
     float wetPad = (out1 + out2) * 0.5f;
 
-    return wetPad * padLevel_;
+    return wetPad * padLevel;
 }
 
 void WorshipPad::Loop(bool allowEffectControl, bool isTapPressed)
@@ -80,21 +85,21 @@ void WorshipPad::Loop(bool allowEffectControl, bool isTapPressed)
     bool freqChanged = false;
 
     // Always track the toggle so octave responds without entering edit mode.
-    int newOctave = octaveToggle_.ReadToggle();
-    if (newOctave != currentOctave_)
+    int newOctave = octaveToggle.ReadToggle();
+    if (newOctave != currentOctave)
     {
-        currentOctave_                = newOctave;
-        effectSettings.togglePosition = currentOctave_;
+        currentOctave                = newOctave;
+        effectSettings.togglePosition = currentOctave;
         freqChanged                   = true;
     }
 
     if (allowEffectControl)
     {
-        if (padKnob_.SetNewValue(padLevel_))
+        if (padKnob.SetNewValue(padLevel))
         {
-            debugPrintlnF(hw, "WorshipPad pad level: %f", padLevel_);
-            updateEditModeKnobValue(display, 1, padLevel_);
-            effectSettings.knobSettings[1] = padLevel_;
+            debugPrintlnF(hw, "WorshipPad pad level: %f", padLevel);
+            updateEditModeKnobValue(display, 1, padLevel);
+            effectSettings.knobSettings[1] = padLevel;
         }
     }
 
@@ -114,14 +119,14 @@ char **WorshipPad::GetKnobNames()
 
 EffectSettings WorshipPad::GetEffectSettings()
 {
-    effectSettings.knobSettings[1] = padLevel_;
-    effectSettings.togglePosition  = currentOctave_;
+    effectSettings.knobSettings[1] = padLevel;
+    effectSettings.togglePosition  = currentOctave;
     return effectSettings;
 }
 
 void WorshipPad::SetEffectSettings(EffectSettings settings)
 {
-    padLevel_      = settings.knobSettings[1];
-    currentOctave_ = settings.togglePosition;
+    padLevel      = settings.knobSettings[1];
+    currentOctave = settings.togglePosition;
     UpdateFrequencies();
 }

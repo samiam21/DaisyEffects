@@ -8,13 +8,13 @@
  *
  * SPDT 1 - Octave (C3 / C4 / C5)
  *
- * Knob 1 -
- * Knob 2 - Pad level (wet signal)
+ * Knob 1 - Pad level (wet signal)
+ * Knob 2 - 
  * Knob 3 -
  * Knob 4 -
  *
  * Pad-only effect: audio input is ignored. Root note is
- * fixed to C (rootNoteIndex_); key switching to be added
+ * fixed to C (rootNoteIndex); key switching to be added
  * later via buttons.
  **********************************************/
 
@@ -32,23 +32,30 @@ public:
     char **GetKnobNames() override;
     EffectSettings GetEffectSettings() override;
     void SetEffectSettings(EffectSettings effectSettings) override;
+    void ConfigureKnobPositions(int padChannel);
 
 private:
     void UpdateFrequencies();
 
     const char *knobNames[MAX_KNOBS] = {
-        (char *)"", (char *)"PAD", (char *)"", (char *)""};
+        (char *)"PAD", (char *)"", (char *)"", (char *)""};
 
-    Oscillator oscRoot_;
-    Oscillator oscFifth_;
+    Oscillator oscRoot;
+    Oscillator oscFifth;
 
-    NFNToggle octaveToggle_;
+    NFNToggle octaveToggle;
 
-    Knob padKnob_;
+    int  padKnobChannel = KNOB_1_CHN;
+    Knob padKnob;
 
-    float padLevel_      = 0.7f;
-    int   currentOctave_ = 1; // 0 = C3, 1 = C4, 2 = C5
-    int   rootNoteIndex_ = 0; // 0 = C; future buttons will change this
+    // Pad level acts as a boost (CleanBoost-style). 0.0 = silent, 1.0 ≈ unity,
+    // higher values boost the wet signal — will clip at extreme settings.
+    const float padLevelMin = 0.0f;
+    const float padLevelMax = 1.0f;
+    float       padLevel   = 1.0f;
+
+    int currentOctave = 1; // 0 = C3, 1 = C4, 2 = C5
+    int rootNoteIndex = 0; // 0 = C; future buttons will change this
 
     // C3 root frequencies for all 12 chromatic notes (A4 = 440 Hz tuning)
     static const float kNoteFreqsC3[12];
