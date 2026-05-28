@@ -3,6 +3,9 @@
 // Placed in SDRAM — the aux_ buffer inside ReverbSc is ~386 KB.
 ReverbSc DSY_SDRAM_BSS wpad_verb;
 
+static const char *kNoteNames[12] = {
+    "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+
 // C3 root frequencies (Hz) for each chromatic note, A4 = 440 Hz tuning.
 const float WorshipPad::kNoteFreqsC3[12] = {
     130.81f, // C
@@ -45,6 +48,9 @@ void WorshipPad::Setup(daisy::DaisySeed *hardware, DaisyDisplay *daisyDisplay, i
     padKnob.Init(hw, padKnobChannel, padLevel, padLevelMin, padLevelMax);
 
     UpdateFrequencies();
+
+    if (display)
+        display->WriteMessage((char *)kNoteNames[rootNoteIndex]);
 }
 
 void WorshipPad::UpdateFrequencies()
@@ -71,12 +77,16 @@ void WorshipPad::NextRootNote()
 {
     rootNoteIndex = (rootNoteIndex + 1) % 12;
     UpdateFrequencies();
+    if (display)
+        display->WriteMessage((char *)kNoteNames[rootNoteIndex]);
 }
 
 void WorshipPad::PrevRootNote()
 {
     rootNoteIndex = (rootNoteIndex + 11) % 12;
     UpdateFrequencies();
+    if (display)
+        display->WriteMessage((char *)kNoteNames[rootNoteIndex]);
 }
 
 float WorshipPad::Process(float in)
