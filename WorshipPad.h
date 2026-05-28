@@ -34,6 +34,9 @@ public:
     void SetEffectSettings(EffectSettings effectSettings) override;
     void ConfigureKnobPositions(int padChannel);
 
+    void NextRootNote();
+    void PrevRootNote();
+
 private:
     void UpdateFrequencies();
 

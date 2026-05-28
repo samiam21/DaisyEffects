@@ -67,6 +67,18 @@ void WorshipPad::ConfigureKnobPositions(int padChannel)
     padKnobChannel = padChannel;
 }
 
+void WorshipPad::NextRootNote()
+{
+    rootNoteIndex = (rootNoteIndex + 1) % 12;
+    UpdateFrequencies();
+}
+
+void WorshipPad::PrevRootNote()
+{
+    rootNoteIndex = (rootNoteIndex + 11) % 12;
+    UpdateFrequencies();
+}
+
 float WorshipPad::Process(float in)
 {
     (void)in; // Pad-only effect — audio input is intentionally ignored.
