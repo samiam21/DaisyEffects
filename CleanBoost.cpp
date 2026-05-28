@@ -37,6 +37,13 @@ void CleanBoost::SetBoostMinMax(float boostMin, float boostMax)
     boostLevelMax = boostMax;
 }
 
+void CleanBoost::SetAlwaysOn(bool on)
+{
+    alwaysOn = on;
+    if (alwaysOn)
+        audioOn = true;
+}
+
 void CleanBoost::Loop(bool allowEffectControl, bool isTapPressed)
 {
     // Only adjust if we are in edit mode
@@ -52,8 +59,9 @@ void CleanBoost::Loop(bool allowEffectControl, bool isTapPressed)
             effectSettings.knobSettings[0] = boostLevel;
         }
 
-        // Toggle controls audio on or off
-        audioOn = onOffToggle.ReadToggle();
+        // Toggle controls audio on or off (skipped when always-on mode is set)
+        if (!alwaysOn)
+            audioOn = onOffToggle.ReadToggle();
     }
 }
 
