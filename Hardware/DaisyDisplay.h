@@ -11,6 +11,7 @@ using MyOledDisplay = OledDisplay<SSD130x4WireSpi128x64Driver>;
 
 #define MAX_MESSAGE_LEN 255
 #define FONT_SIZE Font_6x8
+#define FONT_SIZE_LARGE Font_11x18
 #define LINE_HEIGHT 9
 #define CHAR_WIDTH 7
 #define SSD1309_WIDTH 128

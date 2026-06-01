@@ -64,6 +64,11 @@ void WorshipPad::UpdateFrequencies()
 
     float rootFreq = kNoteFreqsC3[rootNoteIndex] * octMul;
 
+    // Keys G–B sit an octave lower so their "mid" toggle position lands
+    // where the others' "low" used to (G4 mid was too high).
+    if (rootNoteIndex >= 7) // 7=G, 8=G#, 9=A, 10=A#, 11=B
+        rootFreq *= 0.5f;
+
     oscRoot.SetFreq(rootFreq);
     oscFifth.SetFreq(rootFreq * 1.49831f); // perfect fifth (2^(7/12))
 }
