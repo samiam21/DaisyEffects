@@ -125,7 +125,9 @@ void WorshipPad::Loop(bool allowEffectControl, bool isTapPressed)
         if (padKnob.SetNewValue(padLevel))
         {
             debugPrintlnF(hw, "WorshipPad pad level: %f", padLevel);
-            updateEditModeKnobValue(display, 1, padLevel);
+            // Intentionally not calling updateEditModeKnobValue here: the
+            // display is reserved for showing the current musical key, so the
+            // pad-level knob should not overwrite it with a value readout.
             effectSettings.knobSettings[1] = padLevel;
         }
     }
